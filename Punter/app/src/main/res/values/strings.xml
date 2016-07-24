@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Punter</string>
+    <string name="fetch_games_button_text">Fetch games</string>
 </resources>
