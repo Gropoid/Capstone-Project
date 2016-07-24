@@ -3,7 +3,6 @@ package gropoid.punter;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.facebook.stetho.BuildConfig;
 import com.facebook.stetho.Stetho;
 
 import gropoid.punter.injection.AppComponent;

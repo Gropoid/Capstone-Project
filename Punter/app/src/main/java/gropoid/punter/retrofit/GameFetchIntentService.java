@@ -8,7 +8,6 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import gropoid.punter.Punter;
 import gropoid.punter.domain.GameManager;
 import gropoid.punter.injection.DaggerBackgroundComponent;
 import gropoid.punter.injection.DataAccessModule;
@@ -41,9 +40,8 @@ public class GameFetchIntentService extends IntentService {
     public void onCreate() {
         super.onCreate();
         DaggerBackgroundComponent.builder()
-                .appComponent(((Punter) getApplication()).getAppComponent())
                 .networkModule(new NetworkModule())
-                .dataAccessModule(new DataAccessModule())
+                .dataAccessModule(new DataAccessModule(getApplicationContext()))
                 .build()
                 .inject(this);
     }

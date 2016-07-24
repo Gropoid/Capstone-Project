@@ -21,6 +21,10 @@ public class PunterContract {
     /* Table contents of the game table */
     public static final class GameEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAME).build();
+
+        public static Uri buildGameUri(String id) {
+            return BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAME).appendPath(id).build();
+        }
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_GAME;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_GAME;
 
@@ -35,6 +39,9 @@ public class PunterContract {
 
     public static final class PlatformEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLATFORM).build();
+        public static Uri buildPlatformUri(String id) {
+            return BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLATFORM).appendPath(id).build();
+        }
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLATFORM;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLATFORM;
 
@@ -47,6 +54,10 @@ public class PunterContract {
 
     public static final class GamePlatformEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAME_PLATFORM).build();
+        public static Uri buildGamePlatformUri(String id) {
+            return BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAME_PLATFORM).appendPath(id).build();
+        }
+
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_GAME_PLATFORM;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_GAME_PLATFORM;
 
@@ -54,10 +65,14 @@ public class PunterContract {
 
         public static final String COLUMN_GAME = "game";
         public static final String COLUMN_PLATFORM = "platform";
+
     }
 
     public static final class QuestionEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_QUESTION).build();
+        public static Uri buildQuestionUri(String id) {
+            return BASE_CONTENT_URI.buildUpon().appendPath(PATH_QUESTION).appendPath(id).build();
+        }
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_QUESTION;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_QUESTION;
 

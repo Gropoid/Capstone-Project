@@ -9,6 +9,17 @@ import gropoid.punter.domain.GameManager;
 
 @Module
 public class DataAccessModule {
+
+    Context context;
+    public DataAccessModule(Context context) {
+        this.context = context;
+    }
+
+    @Provides
+    Context provideContext() {
+        return context;
+    }
+
     @Provides
     PunterDbHelper providePunterDbHelper(Context context) {
         return new PunterDbHelper(context);

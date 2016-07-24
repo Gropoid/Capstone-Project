@@ -3,7 +3,6 @@ package gropoid.punter.domain;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 import android.support.annotation.WorkerThread;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +24,6 @@ public class GameManager {
     public void save(GameDTO game, byte[] image) {
         // overwrite path if exists
         Timber.v("save game image [%s]", game.getName());
-        Log.v("GameManager", "allo quoi");
         File folder = new File(getImageFolderPath());
         //noinspection ResultOfMethodCallIgnored
         folder.mkdirs();
