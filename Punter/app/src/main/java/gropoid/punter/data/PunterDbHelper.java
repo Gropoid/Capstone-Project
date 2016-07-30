@@ -42,39 +42,38 @@ public class PunterDbHelper extends SQLiteOpenHelper {
 
     private String createGameTable() {
         return "CREATE TABLE " + GameEntry.TABLE_NAME + " (" +
-                GameEntry._ID + " INTEGER PRIMARY KEY," +
+                GameEntry.COLUMN_GIANT_BOMB_ID + " INTEGER PRIMARY KEY," +
                 GameEntry.COLUMN_DECK + " TEXT," +
-                GameEntry.COLUMN_GIANT_BOMB_ID + " INTEGER UNIQUE, " +
                 GameEntry.COLUMN_IMAGE + " TEXT NOT NULL, " +
                 GameEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                GameEntry.COLUMN_ORIGINAL_RELEASE_DATE + " INTEGER" +
+                GameEntry.COLUMN_ORIGINAL_RELEASE_DATE + " INTEGER, " +
+                GameEntry.COLUMN_API_DETAIL_URL + " TEXT" +
                 ");";
     }
 
     private String createPlatformTable() {
         return "CREATE TABLE " + PlatformEntry.TABLE_NAME + " (" +
-                PlatformEntry._ID + " INTEGER PRIMARY KEY, " +
-                PlatformEntry.COLUMN_GIANT_BOMB_ID + " INTEGER UNIQUE, " +
+                PlatformEntry.COLUMN_GIANT_BOMB_ID + " INTEGER PRIMARY KEY, " +
                 PlatformEntry.COLUMN_NAME + " TEXT, " +
-                PlatformEntry.COLUMN_ABBREVIATION + "TEXT" +
+                PlatformEntry.COLUMN_ABBREVIATION + " TEXT" +
                 ");";
     }
 
     private String createGamePlatformTable() {
         return "CREATE TABLE " + GamePlatformEntry.TABLE_NAME + " (" +
                 GamePlatformEntry._ID + " INTEGER PRIMARY KEY, " +
-                GamePlatformEntry.COLUMN_GAME + " INTEGER FOREIGN KEY," +
-                GamePlatformEntry.COLUMN_PLATFORM + " INTEGER FOREIGN KEY" +
+                GamePlatformEntry.COLUMN_GAME + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
+                GamePlatformEntry.COLUMN_PLATFORM + " INTEGER REFERENCES " + PlatformEntry.TABLE_NAME +
                 ")";
     }
 
     private String createQuestionTable() {
         return "CREATE TABLE " + QuestionEntry.TABLE_NAME + " (" +
                 QuestionEntry._ID + " INTEGER PRIMARY KEY, " +
-                QuestionEntry.COLUMN_ANSWER1 + " INTEGER FOREIGN KEY, " +
-                QuestionEntry.COLUMN_ANSWER2 + " INTEGER FOREIGN KEY, " +
-                QuestionEntry.COLUMN_ANSWER3 + " INTEGER FOREIGN KEY, " +
-                QuestionEntry.COLUMN_ANSWER4 + " INTEGER FOREIGN KEY, " +
+                QuestionEntry.COLUMN_ANSWER1 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
+                QuestionEntry.COLUMN_ANSWER2 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
+                QuestionEntry.COLUMN_ANSWER3 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
+                QuestionEntry.COLUMN_ANSWER4 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
                 QuestionEntry.COLUMN_CORRECT_ANSWER + " INTEGER " +
                 ")";
     }

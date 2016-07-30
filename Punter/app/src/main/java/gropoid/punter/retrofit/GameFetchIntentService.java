@@ -77,7 +77,7 @@ public class GameFetchIntentService extends IntentService {
                 Timber.v("fetched data from api :\n%s", response.body());
                 Page<GameDTO> page = response.body();
                 for (GameDTO gameDto : page.getResults()) {
-                    tryFetchImageAndSave(gameDto);
+                    fetchImageAndSave(gameDto);
                 }
             }
         } catch (IOException e) {
@@ -85,7 +85,7 @@ public class GameFetchIntentService extends IntentService {
         }
     }
 
-    private void tryFetchImageAndSave(GameDTO gameDto) {
+    private void fetchImageAndSave(GameDTO gameDto) {
         if (gameDto.getImage() == null) {
             return;
         }
@@ -97,7 +97,7 @@ public class GameFetchIntentService extends IntentService {
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
                 Timber.v("Successfully retrieved image for game %s", gameDto.getName());
-                gameManager.save(gameDto, response.body().bytes());
+                gameManager.save(gameDto.toGame(), gameDto.getImage().getMediumUrl(), response.body().bytes());
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -8,26 +8,32 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import gropoid.punter.retrofit.dto.GameDTO;
+import javax.inject.Inject;
+
+import gropoid.punter.data.Repository;
 import timber.log.Timber;
 
 public class GameManager {
     public static final String IMAGE_FOLDER = "images/";
     public static final String IMAGE_FILE = "image";
-    private Context context;
 
-    public GameManager(Context context) {
-        this.context = context;
+    @Inject
+    Context context;
+    @Inject
+    Repository gameRepository;
+
+    @Inject
+    public GameManager(Context context, Repository gameRepository) {
     }
 
     @WorkerThread
-    public void save(GameDTO game, byte[] image) {
+    public Game save(Game game, String imageUrl, byte[] image) {
         // overwrite path if exists
         Timber.v("save game image [%s]", game.getName());
         File folder = new File(getImageFolderPath());
         //noinspection ResultOfMethodCallIgnored
         folder.mkdirs();
-        File imageFile = new File(getImageFilePath(game.getId(), getImageExtension(game.getImage().getMediumUrl())));
+        File imageFile = new File(getImageFilePath(game.getId(), getImageExtension(imageUrl)));
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(imageFile);
@@ -43,7 +49,11 @@ public class GameManager {
                 }
             }
         }
+        game.setImageFile(imageFile.getPath());
+        gameRepository.save(game);
+        return game;
     }
+
 
 
     @VisibleForTesting

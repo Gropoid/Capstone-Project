@@ -1,11 +1,11 @@
 package gropoid.punter.injection;
 
+import android.content.ContentResolver;
 import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
 import gropoid.punter.data.PunterDbHelper;
-import gropoid.punter.domain.GameManager;
 
 @Module
 public class DataAccessModule {
@@ -26,7 +26,8 @@ public class DataAccessModule {
     }
 
     @Provides
-    GameManager provideGameManager(Context context) {
-        return new GameManager(context);
+    ContentResolver provideContentResolver(Context context) {
+        return context.getContentResolver();
     }
+
 }

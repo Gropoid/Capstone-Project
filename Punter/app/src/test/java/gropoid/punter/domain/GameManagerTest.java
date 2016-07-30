@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import gropoid.punter.data.Repository;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -14,13 +16,15 @@ public class GameManagerTest {
 
     @Mock
     Context context;
+    @Mock
+    Repository repository;
 
     GameManager gameManager;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        gameManager = new GameManager(context);
+        gameManager = new GameManager(context, repository);
     }
 
     @Test

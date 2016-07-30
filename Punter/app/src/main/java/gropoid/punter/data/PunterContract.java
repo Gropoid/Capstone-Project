@@ -19,7 +19,7 @@ public class PunterContract {
     public static final String PATH_QUESTION = "question";
 
     /* Table contents of the game table */
-    public static final class GameEntry implements BaseColumns {
+    public static final class GameEntry {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAME).build();
 
         public static Uri buildGameUri(String id) {
@@ -35,9 +35,10 @@ public class PunterContract {
         public static final String COLUMN_IMAGE = "image";
         public static final String COLUMN_DECK = "deck";
         public static final String COLUMN_ORIGINAL_RELEASE_DATE = "original_release_date";
+        public static final String COLUMN_API_DETAIL_URL = "api_detail_url";
     }
 
-    public static final class PlatformEntry implements BaseColumns {
+    public static final class PlatformEntry {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLATFORM).build();
         public static Uri buildPlatformUri(String id) {
             return BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLATFORM).appendPath(id).build();

@@ -4,8 +4,12 @@ package gropoid.punter.retrofit.dto;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import gropoid.punter.domain.Game;
+import gropoid.punter.domain.Platform;
 
 public class GameDTO {
     @Expose
@@ -24,7 +28,7 @@ public class GameDTO {
     @SerializedName("name")
     String name;
     @Expose
-    @SerializedName("original_releaseDate")
+    @SerializedName("original_release_date")
     Date originalReleaseDate;
     @Expose
     @SerializedName("platforms")
@@ -85,4 +89,19 @@ public class GameDTO {
     public void setPlatforms(List<PlatformDTO> platforms) {
         this.platforms = platforms;
     }
+
+    public Game toGame() {
+        Game game = new Game();
+        game.setId(id);
+        game.setName(name);
+        game.setApiDetailUrl(apiDetailUrl);
+        game.setDeck(deck);
+        game.setOriginalReleaseDate(originalReleaseDate);
+        game.setPlatforms(new ArrayList<Platform>());
+        for(PlatformDTO platformDTO : platforms) {
+            game.getPlatforms().add(platformDTO.toPlatform());
+        }
+        return game;
+    }
+
 }

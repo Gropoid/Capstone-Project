@@ -26,6 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:exported="false"
+            android:authorities="gropoid.punter.provider"
+            android:name=".data.PunterProvider"/>
     </application>
-
 </manifest>

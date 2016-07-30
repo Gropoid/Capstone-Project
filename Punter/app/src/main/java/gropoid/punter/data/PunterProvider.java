@@ -94,7 +94,7 @@ public class PunterProvider extends ContentProvider {
                 break;
             case GAME_PLATFORMS:
                 retCursor = punterDbHelper.getReadableDatabase().query(
-                        QuestionEntry.TABLE_NAME,
+                        GamePlatformEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs, null,
@@ -136,22 +136,22 @@ public class PunterProvider extends ContentProvider {
                 db.insertOrThrow(GameEntry.TABLE_NAME, null, values);
                 //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
-                return GameEntry.buildGameUri(values.getAsString(GameEntry._ID));
+                return GameEntry.CONTENT_URI;
             case GAME_PLATFORMS:
                 db.insertOrThrow(GamePlatformEntry.TABLE_NAME, null, values);
                 //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
-                return GamePlatformEntry.buildGamePlatformUri(values.getAsString(GamePlatformEntry._ID));
+                return GamePlatformEntry.CONTENT_URI;
             case PLATFORMS:
                 db.insertOrThrow(PlatformEntry.TABLE_NAME, null, values);
                 //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
-                return PlatformEntry.buildPlatformUri(values.getAsString(PlatformEntry._ID));
+                return PlatformEntry.CONTENT_URI;
             case QUESTIONS:
                 db.insertOrThrow(QuestionEntry.TABLE_NAME, null, values);
                 //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
-                return QuestionEntry.buildQuestionUri(values.getAsString(QuestionEntry._ID));
+                return QuestionEntry.CONTENT_URI;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
