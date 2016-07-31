@@ -4,15 +4,13 @@ package gropoid.punter.domain;
 public class Question {
     private long id;
 
-
     private int type;
 
-    private Game game1;
-    private Game game2;
-    private Game game3;
-    private Game game4;
+    private Game[] games = new Game[4];
 
     private Game correctAnswer;
+
+    private long correctAnswerCriterion;
 
     public int getType() {
         return type;
@@ -22,36 +20,12 @@ public class Question {
         this.type = type;
     }
 
-    public Game getGame1() {
-        return game1;
+    public Game[] getGames() {
+        return games;
     }
 
-    public void setGame1(Game game1) {
-        this.game1 = game1;
-    }
-
-    public Game getGame2() {
-        return game2;
-    }
-
-    public void setGame2(Game game2) {
-        this.game2 = game2;
-    }
-
-    public Game getGame3() {
-        return game3;
-    }
-
-    public void setGame3(Game game3) {
-        this.game3 = game3;
-    }
-
-    public Game getGame4() {
-        return game4;
-    }
-
-    public void setGame4(Game game4) {
-        this.game4 = game4;
+    public void setGames(Game[] games) {
+        this.games = games;
     }
 
     public Game getCorrectAnswer() {
@@ -60,5 +34,13 @@ public class Question {
 
     public void setCorrectAnswer(Game correctAnswer) {
         this.correctAnswer = correctAnswer;
+    }
+
+    public void setCorrectAnswerCriterion(long correctAnswerCriterion) {
+        this.correctAnswerCriterion = correctAnswerCriterion;
+    }
+
+    public long getCorrectAnswerCriterion() {
+        return correctAnswerCriterion;
     }
 }

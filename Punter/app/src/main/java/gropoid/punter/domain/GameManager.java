@@ -14,6 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import gropoid.punter.data.Repository;
+import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 public class GameManager {
@@ -74,6 +75,7 @@ public class GameManager {
         return getImageFolderPath() + id + extension;
     }
 
+    @DebugLog
     public List<Game> getAllGames() {
         List<Game> games = repository.findAllGames();
         Hashtable<Long, Platform> platformPool = new Hashtable<>();
