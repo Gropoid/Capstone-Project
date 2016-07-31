@@ -36,6 +36,7 @@ public class PunterContract {
         public static final String COLUMN_DECK = "deck";
         public static final String COLUMN_ORIGINAL_RELEASE_DATE = "original_release_date";
         public static final String COLUMN_API_DETAIL_URL = "api_detail_url";
+        public static final String COLUMN_USES = "uses";
     }
 
     public static final class PlatformEntry {

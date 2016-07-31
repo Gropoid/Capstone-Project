@@ -7,6 +7,9 @@ import android.support.annotation.WorkerThread;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,10 +23,12 @@ public class GameManager {
     @Inject
     Context context;
     @Inject
-    Repository gameRepository;
+    Repository repository;
 
     @Inject
-    public GameManager(Context context, Repository gameRepository) {
+    public GameManager(Context context, Repository repository) {
+        this.context = context;
+        this.repository = repository;
     }
 
     @WorkerThread
@@ -50,10 +55,9 @@ public class GameManager {
             }
         }
         game.setImageFile(imageFile.getPath());
-        gameRepository.save(game);
+        repository.save(game);
         return game;
     }
-
 
 
     @VisibleForTesting
@@ -68,5 +72,30 @@ public class GameManager {
 
     private String getImageFilePath(long id, String extension) {
         return getImageFolderPath() + id + extension;
+    }
+
+    public List<Game> getAllGames() {
+        List<Game> games = repository.findAllGames();
+        Hashtable<Long, Platform> platformPool = new Hashtable<>();
+        for (Platform platform : getAllPlatforms()) {
+            platformPool.put(platform.getId(), platform);
+        }
+        for (Game game : games) {
+            List<Long> platformIds = findPlatformIdsForGame(game);
+            List<Platform> platforms = new ArrayList<>();
+            for (Long id : platformIds) {
+                platforms.add(platformPool.get(id));
+            }
+            game.setPlatforms(platforms);
+        }
+        return games;
+    }
+
+    public List<Platform> getAllPlatforms() {
+        return repository.findAllPlatforms();
+    }
+
+    private List<Long> findPlatformIdsForGame(Game game) {
+        return repository.findPlatformIdsForGameId(game.getId());
     }
 }

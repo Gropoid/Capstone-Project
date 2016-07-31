@@ -2,14 +2,13 @@ package gropoid.punter.injection;
 
 import android.support.annotation.NonNull;
 
-import gropoid.punter.interactor.DebugInteractor;
-import gropoid.punter.interactor.impl.DebugInteractorImpl;
-import gropoid.punter.presenter.loader.PresenterFactory;
-import gropoid.punter.presenter.DebugPresenter;
-import gropoid.punter.presenter.impl.DebugPresenterImpl;
-
 import dagger.Module;
 import dagger.Provides;
+import gropoid.punter.interactor.DebugInteractor;
+import gropoid.punter.interactor.impl.DebugInteractorImpl;
+import gropoid.punter.presenter.DebugPresenter;
+import gropoid.punter.presenter.impl.DebugPresenterImpl;
+import gropoid.punter.presenter.loader.PresenterFactory;
 
 @Module
 public final class DebugViewModule {

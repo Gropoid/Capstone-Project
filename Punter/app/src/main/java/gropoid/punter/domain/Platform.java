@@ -1,15 +1,15 @@
 package gropoid.punter.domain;
 
 public class Platform {
-    int id;
+    long id;
     String name;
     String abbreviation;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

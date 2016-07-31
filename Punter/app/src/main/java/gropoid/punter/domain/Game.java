@@ -12,6 +12,7 @@ public class Game {
     String name;
     Date originalReleaseDate;
     List<Platform> platforms;
+    int uses = 0;
 
     public long getId() {
         return id;
@@ -59,6 +60,14 @@ public class Game {
 
     public void setOriginalReleaseDate(Date originalReleaseDate) {
         this.originalReleaseDate = originalReleaseDate;
+    }
+
+    public int getUses() {
+        return uses;
+    }
+
+    public void setUses(int uses) {
+        this.uses = uses;
     }
 
     public List<Platform> getPlatforms() {

@@ -5,7 +5,7 @@ import gropoid.punter.view.impl.DebugActivity;
 import dagger.Component;
 
 @ActivityScope
-@Component(dependencies = AppComponent.class, modules = DebugViewModule.class)
+@Component( modules = {DebugViewModule.class, DataAccessModule.class})
 public interface DebugViewComponent {
     void inject(DebugActivity activity);
 }
