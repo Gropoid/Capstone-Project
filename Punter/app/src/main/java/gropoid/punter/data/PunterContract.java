@@ -72,6 +72,7 @@ public class PunterContract {
 
     public static final class QuestionEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_QUESTION).build();
+
         public static Uri buildQuestionUri(String id) {
             return BASE_CONTENT_URI.buildUpon().appendPath(PATH_QUESTION).appendPath(id).build();
         }
@@ -88,6 +89,7 @@ public class PunterContract {
         public static final String COLUMN_ANSWER4 = "answer4";
 
         public static final String COLUMN_CORRECT_ANSWER = "correct_answer";
+        public static final String COLUMN_CRITERION = "criterion";
 
     }
 

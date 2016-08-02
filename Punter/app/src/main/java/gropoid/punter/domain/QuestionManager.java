@@ -1,12 +1,12 @@
 package gropoid.punter.domain;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import gropoid.punter.data.Repository;
 import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
@@ -19,6 +19,9 @@ public class QuestionManager {
 
     @Inject
     GameManager gameManager;
+
+    @Inject
+    Repository repository;
 
     @Inject
     public QuestionManager(GameManager gameManager) {
@@ -47,19 +50,27 @@ public class QuestionManager {
         public static final int WAS_NEVER_RELEASED_ON_PLATFORM = 2;
     }
 
-    public void generateQuestions() {
+    @DebugLog
+    public void generateQuestions(int questionPoolSize) {
         gamePool = gameManager.getAllGames();
         platformPool = gameManager.getAllPlatforms();
-        List<Question> questions = new ArrayList<>();
-        do {
+        if (gamePool.size() < 20) {
+            Timber.w("Not enough games in db to generate questions");
+            return;
+        }
+        if (platformPool.size() < 20) {
+            Timber.w("Not enough games in db to generate questions");
+            return;
+        }
+        while(repository.getQuestionsCount() < questionPoolSize) {
             Question question = generateQuestion();
             if (question != null) {
-                questions.add(generateQuestion());
+                repository.save(generateQuestion());
             }
-        } while (questions.size() < 10);
+            Timber.v("Questions count in db : %s ", repository.getQuestionsCount());
+        }
     }
 
-    @DebugLog
     private Question generateQuestion() {
         Question question = new Question();
         question.setType(randType());
@@ -133,6 +144,10 @@ public class QuestionManager {
             }
         }
         return result;
+    }
+
+    public List<Question> getQuestions(int count) {
+        return repository.findQuestions(count);
     }
 
 }

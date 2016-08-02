@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Button;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,8 @@ public final class DebugActivity extends BaseActivity<DebugPresenter, DebugView>
     Button fetchGamesButton;
     @BindView(R.id.generate_questions_button)
     Button generateQuestionsButton;
+    @BindView(R.id.get_questions_button)
+    Button getQuestionsButton;
 
 
     // Your presenter is available using the mPresenter variable
@@ -69,12 +72,17 @@ public final class DebugActivity extends BaseActivity<DebugPresenter, DebugView>
         AsyncTask t = new AsyncTask<Object, Void, Void>() {
             @Override
             protected Void doInBackground(Object... params) {
-                questionManager.generateQuestions();
+                questionManager.generateQuestions(100);
                 return null;
             }
         };
         t.execute();
+    }
 
+    @OnClick(R.id.get_questions_button)
+    void getQuestions() {
+        questionManager.getQuestions(5);
+        Toast.makeText(this, "retrieved questions", Toast.LENGTH_LONG).show();
     }
 
     @NonNull

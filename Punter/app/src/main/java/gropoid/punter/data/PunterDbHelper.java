@@ -71,11 +71,13 @@ public class PunterDbHelper extends SQLiteOpenHelper {
     private String createQuestionTable() {
         return "CREATE TABLE " + QuestionEntry.TABLE_NAME + " (" +
                 QuestionEntry._ID + " INTEGER PRIMARY KEY, " +
+                QuestionEntry.COLUMN_TYPE + " INTEGER, " +
                 QuestionEntry.COLUMN_ANSWER1 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
                 QuestionEntry.COLUMN_ANSWER2 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
                 QuestionEntry.COLUMN_ANSWER3 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
                 QuestionEntry.COLUMN_ANSWER4 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
-                QuestionEntry.COLUMN_CORRECT_ANSWER + " INTEGER " +
+                QuestionEntry.COLUMN_CORRECT_ANSWER + " INTEGER," +
+                QuestionEntry.COLUMN_CRITERION + " INTEGER " +
                 ")";
     }
 }
