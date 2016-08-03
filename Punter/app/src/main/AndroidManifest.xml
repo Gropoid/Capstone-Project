@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="gropoid.punter">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".Punter"
         android:allowBackup="true"
@@ -23,12 +24,17 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
-            android:exported="false"
+            android:name=".data.PunterProvider"
             android:authorities="gropoid.punter.provider"
-            android:name=".data.PunterProvider"/>
+            android:exported="false" />
+
+        <activity android:name=".view.impl.SignInActivity"></activity>
     </application>
+
 </manifest>
