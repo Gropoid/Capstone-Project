@@ -5,7 +5,7 @@ import gropoid.punter.view.impl.QuizzFragment;
 import dagger.Component;
 
 @FragmentScope
-@Component(dependencies = AppComponent.class, modules = QuizzViewModule.class)
+@Component(modules = {QuizzViewModule.class, DataAccessModule.class})
 public interface QuizzViewComponent {
     void inject(QuizzFragment fragment);
 }

@@ -4,22 +4,23 @@ import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 
-import gropoid.punter.domain.Question;
-import gropoid.punter.interactor.QuizzInteractor;
-import gropoid.punter.presenter.QuizzPresenter;
-import gropoid.punter.view.QuizzView;
+import gropoid.punter.data.PunterState;
+import gropoid.punter.interactor.MainInteractor;
+import gropoid.punter.presenter.MainPresenter;
+import gropoid.punter.view.MainView;
+import timber.log.Timber;
 
-public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> implements QuizzPresenter {
+public final class MainPresenterImpl extends BasePresenterImpl<MainView> implements MainPresenter {
     /**
      * The interactor
      */
     @NonNull
-    private final QuizzInteractor mInteractor;
+    private final MainInteractor mInteractor;
 
     // The view is available using the mView variable
 
     @Inject
-    public QuizzPresenterImpl(@NonNull QuizzInteractor interactor) {
+    public MainPresenterImpl(@NonNull MainInteractor interactor) {
         mInteractor = interactor;
     }
 
@@ -28,9 +29,6 @@ public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> imple
         super.onStart(firstStart);
 
         // Your code here. Your view is available using mView and will not be null until next onStop()
-        Question question = mInteractor.getCurrentQuestion();
-        assert mView != null;
-        mView.showQuestion(question);
     }
 
     @Override
@@ -51,22 +49,21 @@ public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> imple
     }
 
     @Override
-    public void submitAnswer0() {
-
-    }
-
-    @Override
-    public void submitAnswer1() {
-
-    }
-
-    @Override
-    public void submitAnswer2() {
-
-    }
-
-    @Override
-    public void submitAnswer3() {
-
+    public void loadCurrentStatus() {
+        if (mView != null) {
+            switch (mInteractor.getCurrentState()) {
+                case PunterState.HOME:
+                    mView.showHome();
+                    break;
+                case PunterState.QUIZZ:
+                    mView.startQuizz();
+                    break;
+                case PunterState.END_GAME:
+                    mView.showEndGame();
+                    break;
+            }
+        } else {
+            Timber.w("mView was null");
+        }
     }
 }

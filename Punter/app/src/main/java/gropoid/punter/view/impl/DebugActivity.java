@@ -1,5 +1,6 @@
 package gropoid.punter.view.impl;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,6 +36,8 @@ public final class DebugActivity extends BaseActivity<DebugPresenter, DebugView>
     Button generateQuestionsButton;
     @BindView(R.id.get_questions_button)
     Button getQuestionsButton;
+    @BindView(R.id.main_activity_button)
+    Button mainActivityButton;
 
 
     // Your presenter is available using the mPresenter variable
@@ -69,10 +72,11 @@ public final class DebugActivity extends BaseActivity<DebugPresenter, DebugView>
 
     @OnClick(R.id.generate_questions_button)
     void generateQuestions() {
-        AsyncTask t = new AsyncTask<Object, Void, Void>() {
+        AsyncTask<Void, Void, Void> t = new AsyncTask<Void, Void, Void>() {
             @Override
-            protected Void doInBackground(Object... params) {
+            protected Void doInBackground(Void... voids) {
                 questionManager.generateQuestions(100);
+
                 return null;
             }
         };
@@ -89,5 +93,10 @@ public final class DebugActivity extends BaseActivity<DebugPresenter, DebugView>
     @Override
     protected PresenterFactory<DebugPresenter> getPresenterFactory() {
         return mPresenterFactory;
+    }
+
+    @OnClick(R.id.main_activity_button)
+    public void onClick() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

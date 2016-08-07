@@ -8,6 +8,8 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        tools:src="@drawable/static_tv"
         tools:ignore="ContentDescription"/>
     
     <ImageView
@@ -22,6 +24,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:gravity="bottom|center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:maxLines="2"
+        android:ellipsize="marquee"
         tools:text="Rick Dangerous 2 : Judgement Day"/>
     
 </FrameLayout>

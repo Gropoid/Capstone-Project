@@ -3,4 +3,5 @@
     <string name="fetch_games_button_text">Fetch games</string>
     <string name="generate_questions">Generate questions</string>
     <string name="get_questions">Get questions</string>
+    <string name="launch_main_activity">Launch Main Activity</string>
 </resources>

@@ -20,15 +20,16 @@
         android:layout_weight="1">
 
         <gropoid.punter.view.impl.GameView
-            android:id="@+id/answer0"
+            android:id="@+id/game0"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            tools:text="game 0" />
+            tools:text="game 0"
+            tools:ignore="NestedWeights" />
 
         <gropoid.punter.view.impl.GameView
-            android:id="@+id/answer1"
+            android:id="@+id/game1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
@@ -42,15 +43,16 @@
         android:layout_weight="1">
 
         <gropoid.punter.view.impl.GameView
-            android:id="@+id/answer2"
+            android:id="@+id/game2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            tools:text="game 2" />
+            tools:text="game 2"
+            tools:ignore="NestedWeights" />
 
         <gropoid.punter.view.impl.GameView
-            android:id="@+id/answer3"
+            android:id="@+id/game3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

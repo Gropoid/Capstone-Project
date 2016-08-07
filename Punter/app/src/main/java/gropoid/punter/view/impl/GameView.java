@@ -51,6 +51,8 @@ public class GameView extends CardView {
 
     public void bind(Game game) {
         gameTitle.setText(game.getName());
-        Glide.with(getContext()).load(game.getImageFile()).placeholder(R.drawable.static_tv).fitCenter().into(background);
+        Glide.with(getContext()).load(game.getImageFile())
+                .placeholder(R.drawable.static_tv)
+                .into(background);
     }
 }

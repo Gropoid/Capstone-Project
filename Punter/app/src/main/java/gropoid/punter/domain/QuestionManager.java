@@ -7,6 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import gropoid.punter.data.Repository;
+import gropoid.punter.domain.Question.Type;
 import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
@@ -24,8 +25,9 @@ public class QuestionManager {
     Repository repository;
 
     @Inject
-    public QuestionManager(GameManager gameManager) {
+    public QuestionManager(GameManager gameManager, Repository repository) {
         this.gameManager = gameManager;
+        this.repository = repository;
     }
 
     private int randType() {
@@ -44,11 +46,6 @@ public class QuestionManager {
         return (int) Math.floor(Math.random() * value);
     }
 
-    public class Type {
-        public static final int RELEASE_DATE = 0;
-        public static final int WAS_RELEASED_ON_PLATFORM = 1;
-        public static final int WAS_NEVER_RELEASED_ON_PLATFORM = 2;
-    }
 
     @DebugLog
     public void generateQuestions(int questionPoolSize) {

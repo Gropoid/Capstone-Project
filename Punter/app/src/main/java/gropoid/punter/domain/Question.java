@@ -12,6 +12,12 @@ public class Question {
 
     private long correctAnswerCriterion;
 
+    public class Type {
+        public static final int RELEASE_DATE = 0;
+        public static final int WAS_RELEASED_ON_PLATFORM = 1;
+        public static final int WAS_NEVER_RELEASED_ON_PLATFORM = 2;
+    }
+
     public long getId() {
         return id;
     }
@@ -50,5 +56,18 @@ public class Question {
 
     public long getCorrectAnswerCriterion() {
         return correctAnswerCriterion;
+    }
+
+    public String getQuestionText() {
+        switch(getType()) {
+            case Type.RELEASE_DATE:
+                return String.format("Which of these games was released in %s ?", getCorrectAnswerCriterion());
+            case Type.WAS_RELEASED_ON_PLATFORM:
+                return "Placeholder question";
+            case Type.WAS_NEVER_RELEASED_ON_PLATFORM:
+                return "Placeholder question";
+            default:
+                return null;
+        }
     }
 }
