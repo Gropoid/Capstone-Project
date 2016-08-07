@@ -1,5 +1,6 @@
 package gropoid.punter.view.impl;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -21,6 +23,7 @@ import gropoid.punter.injection.DataAccessModule;
 import gropoid.punter.injection.QuizzViewModule;
 import gropoid.punter.presenter.QuizzPresenter;
 import gropoid.punter.presenter.loader.PresenterFactory;
+import gropoid.punter.view.QuizzFragmentListener;
 import gropoid.punter.view.QuizzView;
 import timber.log.Timber;
 
@@ -37,6 +40,8 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
     GameView game2;
     @BindView(R.id.game3)
     GameView game3;
+
+    QuizzFragmentListener host;
 
     // Your presenter is available using the mPresenter variable
 
@@ -64,6 +69,16 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
     }
 
     @Override
+    public void onAttach(Context context) {
+        try {
+            host = (QuizzFragmentListener) context;
+        } catch (ClassCastException e) {
+            Timber.e("Host activity must implement QuizzFragmentListener");
+        }
+        super.onAttach(context);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
     }
@@ -88,16 +103,16 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
         if (mPresenter != null) {
             switch (view.getId()) {
                 case R.id.game0:
-                    mPresenter.submitAnswer0();
+                    mPresenter.submitAnswer(0);
                     break;
                 case R.id.game1:
-                    mPresenter.submitAnswer1();
+                    mPresenter.submitAnswer(1);
                     break;
                 case R.id.game2:
-                    mPresenter.submitAnswer2();
+                    mPresenter.submitAnswer(2);
                     break;
                 case R.id.game3:
-                    mPresenter.submitAnswer3();
+                    mPresenter.submitAnswer(3);
                     break;
             }
         } else {
@@ -112,5 +127,15 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
         game1.bind(question.getGames()[1]);
         game2.bind(question.getGames()[2]);
         game3.bind(question.getGames()[3]);
+    }
+
+    @Override
+    public void showResult(boolean b) {
+        Toast.makeText(getContext(), b ? "CORRECT !" : "FALSE", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showEndGame() {
+        host.showEndGame();
     }
 }

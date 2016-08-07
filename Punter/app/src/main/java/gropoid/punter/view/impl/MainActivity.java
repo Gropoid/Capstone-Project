@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -60,6 +61,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
 
     @Override
     public void showHome() {
+        Toast.makeText(this, "Home !!", Toast.LENGTH_LONG).show();
 
     }
 
@@ -77,11 +79,12 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
 
     @Override
     public void showLeaderBoards() {
+        Toast.makeText(this, "LeaderBoards !!", Toast.LENGTH_LONG).show();
 
     }
 
     @Override
     public void showEndGame() {
-
+        Toast.makeText(this, "End Game !!", Toast.LENGTH_LONG).show();
     }
 }

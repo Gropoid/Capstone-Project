@@ -8,4 +8,8 @@ import gropoid.punter.domain.Question;
 public interface QuizzView {
 
     void showQuestion(Question question);
+
+    void showResult(boolean b);
+
+    void showEndGame();
 }

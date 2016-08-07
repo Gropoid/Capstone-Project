@@ -51,22 +51,14 @@ public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> imple
     }
 
     @Override
-    public void submitAnswer0() {
-
-    }
-
-    @Override
-    public void submitAnswer1() {
-
-    }
-
-    @Override
-    public void submitAnswer2() {
-
-    }
-
-    @Override
-    public void submitAnswer3() {
-
+    public void submitAnswer(int answer) {
+        if (mView != null) {
+            mView.showResult(mInteractor.submitAnswer(answer));
+            if (mInteractor.nextQuestion()) {
+                mView.showQuestion(mInteractor.getCurrentQuestion());
+            } else {
+                mView.showEndGame();
+            }
+        }
     }
 }

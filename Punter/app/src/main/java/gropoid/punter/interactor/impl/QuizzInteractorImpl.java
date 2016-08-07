@@ -9,12 +9,14 @@ import gropoid.punter.domain.QuestionManager;
 import gropoid.punter.interactor.QuizzInteractor;
 
 public final class QuizzInteractorImpl implements QuizzInteractor {
+    public static final int QUESTIONS_COUNT = 10;
     @Inject
     QuestionManager questionManager;
 
     List<Question> quizz;
 
     int currentQuestion = -1;
+    private int score = 0;
 
     @Inject
     public QuizzInteractorImpl(QuestionManager questionManager) {
@@ -24,9 +26,30 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
     @Override
     public Question getCurrentQuestion() {
         if (currentQuestion == -1) {
-            quizz = questionManager.getQuestions(10);
+            quizz = questionManager.getQuestions(QUESTIONS_COUNT);
             currentQuestion = 0;
         }
         return quizz.get(currentQuestion);
+    }
+
+    @Override
+    public int getCurrentScore() {
+        return score;
+    }
+
+    @Override
+    public boolean submitAnswer(int answer) {
+        Question question = quizz.get(currentQuestion);
+        boolean answerIsCorrect = question.getCorrectAnswer().getId() == question.getGames()[answer].getId();
+        if (answerIsCorrect) {
+            score += 10;
+        }
+        return answerIsCorrect;
+    }
+
+    @Override
+    public boolean nextQuestion() {
+        currentQuestion++;
+        return currentQuestion < QUESTIONS_COUNT;
     }
 }
