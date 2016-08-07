@@ -90,6 +90,8 @@ public class PunterContract {
 
         public static final String COLUMN_CORRECT_ANSWER = "correct_answer";
         public static final String COLUMN_CRITERION = "criterion";
+        public static final String COLUMN_WORDING = "wording";
+
 
     }
 

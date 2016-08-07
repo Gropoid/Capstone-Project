@@ -148,6 +148,8 @@ public class Repository {
         contentValues.put(QuestionEntry.COLUMN_ANSWER4, question.getGames()[3].getId());
         contentValues.put(QuestionEntry.COLUMN_CORRECT_ANSWER, question.getCorrectAnswer().getId());
         contentValues.put(QuestionEntry.COLUMN_CRITERION, question.getCorrectAnswerCriterion());
+        contentValues.put(QuestionEntry.COLUMN_WORDING, question.getWording());
+
 
         contentResolver.insert(
                 QuestionEntry.CONTENT_URI,
@@ -235,22 +237,29 @@ public class Repository {
         );
         if (c != null && c.moveToFirst()) {
             do {
-                Question question = new Question();
-                question.setId(c.getLong(c.getColumnIndex(QuestionEntry._ID)));
-                question.setCorrectAnswer(findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_CORRECT_ANSWER))));
-                Game[] games = new Game[4];
-                games[0] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER1)));
-                games[1] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER2)));
-                games[2] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER3)));
-                games[3] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER4)));
-                question.setGames(games);
-                question.setType(c.getInt(c.getColumnIndex(QuestionEntry.COLUMN_TYPE)));
-                question.setCorrectAnswerCriterion(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_CRITERION)));
+                Question question = getQuestionFromCursor(c);
                 questions.add(question);
             } while (c.moveToNext());
             c.close();
         }
         return questions;
+    }
+
+    @NonNull
+    private Question getQuestionFromCursor(Cursor c) {
+        Question question = new Question();
+        question.setId(c.getLong(c.getColumnIndex(QuestionEntry._ID)));
+        question.setCorrectAnswer(findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_CORRECT_ANSWER))));
+        Game[] games = new Game[4];
+        games[0] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER1)));
+        games[1] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER2)));
+        games[2] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER3)));
+        games[3] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER4)));
+        question.setGames(games);
+        question.setType(c.getInt(c.getColumnIndex(QuestionEntry.COLUMN_TYPE)));
+        question.setCorrectAnswerCriterion(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_CRITERION)));
+        question.setWording(c.getString(c.getColumnIndex(QuestionEntry.COLUMN_WORDING)));
+        return question;
     }
 
     public Game findGameById(long id) {

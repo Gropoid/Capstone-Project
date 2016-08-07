@@ -2,6 +2,7 @@ package gropoid.punter.domain;
 
 import java.security.InvalidParameterException;
 import java.util.Calendar;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,7 +17,7 @@ public class QuestionManager {
     public static final int POSSIBLE_ANSWERS = 4;
     public static final int MAX_LOOPS = 15;
     private List<Game> gamePool;
-    private List<Platform> platformPool;
+    private Hashtable<Long, Platform> platformPool;
 
     @Inject
     GameManager gameManager;
@@ -50,7 +51,7 @@ public class QuestionManager {
     @DebugLog
     public void generateQuestions(int questionPoolSize) {
         gamePool = gameManager.getAllGames();
-        platformPool = gameManager.getAllPlatforms();
+        buildPlatformPool();
         if (gamePool.size() < 20) {
             Timber.w("Not enough games in db to generate questions");
             return;
@@ -68,12 +69,20 @@ public class QuestionManager {
         }
     }
 
+    private void buildPlatformPool() {
+        platformPool = new Hashtable<>();
+        for(Platform platform: gameManager.getAllPlatforms()) {
+            platformPool.put(platform.getId(), platform);
+        }
+    }
+
     private Question generateQuestion() {
         Question question = new Question();
         question.setType(randType());
         Game correctAnswer = gamePool.get(randGame());
         question.setCorrectAnswer(correctAnswer);
         question.setCorrectAnswerCriterion(makeUpCriterionForQuestion(question));
+        question.setWording(buildQuestionWording(question));
         question.getGames()[randOptions()] = correctAnswer;
         for (int i = 0; i < POSSIBLE_ANSWERS; i++) {
             Game game;
@@ -91,6 +100,33 @@ public class QuestionManager {
             }
         }
         return question;
+    }
+
+    private String buildQuestionWording(Question question) {
+        switch (question.getType()) {
+            case Type.RELEASE_DATE:
+                return buildReleaseDateWording(question.getCorrectAnswerCriterion());
+            case Type.WAS_RELEASED_ON_PLATFORM:
+                return buildReleasedOnPlatformWording(question.getCorrectAnswerCriterion());
+            case Type.WAS_NEVER_RELEASED_ON_PLATFORM:
+                return buildNotReleasedOnPlatformWording(question.getCorrectAnswerCriterion());
+            default:
+                throw new UnsupportedOperationException("Trying to build question wording without a type set");
+        }
+    }
+
+    private String buildNotReleasedOnPlatformWording(long correctAnswerCriterion) {
+
+        return String.format("Which of these games was never released on %s?", platformPool.get(correctAnswerCriterion).getName());
+
+    }
+
+    private String buildReleasedOnPlatformWording(long correctAnswerCriterion) {
+        return String.format("Which of these games was released on %s?", platformPool.get(correctAnswerCriterion).getName());
+    }
+
+    private String buildReleaseDateWording(long correctAnswerCriterion) {
+        return String.format("Which of these games was released in %s?", correctAnswerCriterion);
     }
 
     private long makeUpCriterionForQuestion(Question question) {
@@ -112,7 +148,7 @@ public class QuestionManager {
     private long findPlatformTheGameWasNeverReleasedOn(Game game) {
         Platform platform;
         do {
-            platform = platformPool.get(randomIntUnder(platformPool.size()));
+            platform = (Platform) platformPool.values().toArray()[randomIntUnder(platformPool.size())];
             Timber.d("Trying to find a platform the game was not released on");
         } while (gameWasReleasedOnPlatformWithId(game, platform.getId()));
         return platform.getId();

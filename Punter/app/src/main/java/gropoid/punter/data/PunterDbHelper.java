@@ -76,8 +76,9 @@ public class PunterDbHelper extends SQLiteOpenHelper {
                 QuestionEntry.COLUMN_ANSWER2 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
                 QuestionEntry.COLUMN_ANSWER3 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
                 QuestionEntry.COLUMN_ANSWER4 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
-                QuestionEntry.COLUMN_CORRECT_ANSWER + " INTEGER," +
-                QuestionEntry.COLUMN_CRITERION + " INTEGER " +
+                QuestionEntry.COLUMN_CORRECT_ANSWER + " INTEGER, " +
+                QuestionEntry.COLUMN_CRITERION + " INTEGER, " +
+                QuestionEntry.COLUMN_WORDING + " TEXT" +
                 ")";
     }
 }
