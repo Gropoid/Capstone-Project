@@ -6,6 +6,7 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 import gropoid.punter.data.PunterDbHelper;
+import gropoid.punter.data.PunterState;
 
 @Module
 public class DataAccessModule {
@@ -30,4 +31,8 @@ public class DataAccessModule {
         return context.getContentResolver();
     }
 
+    @Provides
+    PunterState providePunterState(Context context) {
+        return new PunterState(context);
+    }
 }

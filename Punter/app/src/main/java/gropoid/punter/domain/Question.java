@@ -68,16 +68,4 @@ public class Question {
         this.wording = wording;
     }
 
-    public String getQuestionText() {
-        switch(getType()) {
-            case Type.RELEASE_DATE:
-                return String.format("Which of these games was released in %s ?", getCorrectAnswerCriterion());
-            case Type.WAS_RELEASED_ON_PLATFORM:
-                return "Placeholder question";
-            case Type.WAS_NEVER_RELEASED_ON_PLATFORM:
-                return "Placeholder question";
-            default:
-                return null;
-        }
-    }
 }

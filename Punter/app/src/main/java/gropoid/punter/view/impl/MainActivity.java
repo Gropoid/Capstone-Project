@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import gropoid.punter.R;
 import gropoid.punter.injection.AppComponent;
 import gropoid.punter.injection.DaggerMainViewComponent;
+import gropoid.punter.injection.DataAccessModule;
 import gropoid.punter.injection.MainViewModule;
 import gropoid.punter.presenter.MainPresenter;
 import gropoid.punter.presenter.loader.PresenterFactory;
@@ -47,8 +48,8 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
     @Override
     protected void setupComponent(@NonNull AppComponent parentComponent) {
         DaggerMainViewComponent.builder()
-                .appComponent(parentComponent)
                 .mainViewModule(new MainViewModule())
+                .dataAccessModule(new DataAccessModule(getApplicationContext()))
                 .build()
                 .inject(this);
     }

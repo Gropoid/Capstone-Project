@@ -122,11 +122,16 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
 
     @Override
     public void showQuestion(Question question) {
-        this.question.setText(question.getWording());
-        game0.bind(question.getGames()[0]);
-        game1.bind(question.getGames()[1]);
-        game2.bind(question.getGames()[2]);
-        game3.bind(question.getGames()[3]);
+        if (question == null) {
+            Timber.e("Noquestions in db)");
+            host.showEndGame();
+        } else {
+            this.question.setText(question.getWording());
+            game0.bind(question.getGames()[0]);
+            game1.bind(question.getGames()[1]);
+            game2.bind(question.getGames()[2]);
+            game3.bind(question.getGames()[3]);
+        }
     }
 
     @Override

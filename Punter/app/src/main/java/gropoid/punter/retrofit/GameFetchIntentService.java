@@ -70,12 +70,13 @@ public class GameFetchIntentService extends IntentService {
 
 
     private void fetchGames() {
-        Call<Page<GameDTO>> call = giantBombApi.getGames();
+        Call<Page<GameDTO>> call = giantBombApi.getGames(gameManager.getCurrentApiGameOffset());
         try {
             Response<Page<GameDTO>> response = call.execute();
             if (response.isSuccessful()) {
                 Timber.v("fetched data from api :\n%s", response.body());
                 Page<GameDTO> page = response.body();
+                gameManager.setCurrentApiGameOffset(page.getOffset() + page.getNumber_of_page_results());
                 for (GameDTO gameDto : page.getResults()) {
                     fetchImageAndSave(gameDto);
                 }

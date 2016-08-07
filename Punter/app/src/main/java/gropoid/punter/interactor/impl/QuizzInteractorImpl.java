@@ -29,7 +29,11 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
             quizz = questionManager.getQuestions(QUESTIONS_COUNT);
             currentQuestion = 0;
         }
-        return quizz.get(currentQuestion);
+        if (quizz == null || quizz.size() == 0) {
+            return null;
+        } else {
+            return quizz.get(currentQuestion);
+        }
     }
 
     @Override
@@ -49,6 +53,7 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
 
     @Override
     public boolean nextQuestion() {
+        questionManager.expireQuestion(quizz.get(currentQuestion));
         currentQuestion++;
         return currentQuestion < QUESTIONS_COUNT;
     }

@@ -12,6 +12,7 @@ public class PunterState {
     public static final int QUIZZ = 1;
     public static final int END_GAME = 2;
     public static final String CURRENT_STATE = "CurrentState";
+    private static final String CURRENT_API_GAME_PAGE = "CurrentApiGamePage";
 
     @Inject
     SharedPreferences sharedPreferences;
@@ -35,5 +36,13 @@ public class PunterState {
 
     public int getCurrentState() {
         return sharedPreferences.getInt(CURRENT_STATE, QUIZZ);
+    }
+
+    public int getCurrentApiGameOffset() {
+        return sharedPreferences.getInt(CURRENT_API_GAME_PAGE, 0);
+    }
+
+    public void setCurrentApiGameOffset(int offset) {
+        sharedPreferences.edit().putInt(CURRENT_API_GAME_PAGE, offset).apply();
     }
 }

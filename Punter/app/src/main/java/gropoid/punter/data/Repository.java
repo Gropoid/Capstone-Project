@@ -277,4 +277,66 @@ public class Repository {
         }
         return game;
     }
+
+    public int findGameUsesByGameId(long id) {
+        int gameUses = -1;
+        Cursor c = contentResolver.query(
+                GameEntry.CONTENT_URI,
+                new String[]{GameEntry.COLUMN_USES},
+                GameEntry.COLUMN_GIANT_BOMB_ID + " = ?",
+                new String[]{String.valueOf(id)},
+                null
+        );
+        if (c != null && c.moveToFirst()) {
+            gameUses = c.getInt(c.getColumnIndex(GameEntry.COLUMN_USES));
+            c.close();
+        }
+        return gameUses;
+    }
+
+    public int updateGameUsesById(long id, int uses) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(GameEntry.COLUMN_USES, uses);
+        return contentResolver.update(GameEntry.CONTENT_URI,
+                contentValues,
+                GameEntry.COLUMN_GIANT_BOMB_ID + " = ?",
+                new String[]{String.valueOf(id)}
+        );
+    }
+
+    public int getGamesCount() {
+        Cursor c = contentResolver.query(GameEntry.CONTENT_URI, new String[]{"count(*)"}, null, null, null);
+        if (c == null) {
+            return 0;
+        }
+        if (c.getCount() == 0) {
+            c.close();
+            return 0;
+        } else {
+            c.moveToFirst();
+            int result = c.getInt(0);
+            c.close();
+            return result;
+        }
+    }
+
+    public void delete(Game game) {
+        if (contentResolver.delete(
+                GameEntry.CONTENT_URI,
+                GameEntry.COLUMN_GIANT_BOMB_ID + " = ?",
+                new String[]{String.valueOf(game.getId())}
+        ) != 1) {
+            Timber.w("Trying to delete nonexistant game (%s)", game.getName());
+        }
+    }
+
+    public void delete(Question question) {
+        if (contentResolver.delete(
+                QuestionEntry.CONTENT_URI,
+                QuestionEntry._ID + " = ?",
+                new String[]{String.valueOf(question.getId())}
+        ) != 1) {
+            Timber.w("Trying to delete nonexistant question (%s)", question.getId());
+        }
+    }
 }

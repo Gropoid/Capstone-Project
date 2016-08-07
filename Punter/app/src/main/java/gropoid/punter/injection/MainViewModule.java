@@ -1,6 +1,5 @@
 package gropoid.punter.injection;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import dagger.Module;
@@ -29,8 +28,5 @@ public final class MainViewModule {
             }
         };
     }
-    @Provides
-    PunterState providePunterState(Context context) {
-        return new PunterState(context);
-    }
+
 }
