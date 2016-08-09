@@ -118,6 +118,10 @@ public class GameManager {
         }
     }
 
+    public boolean wasGameUsedEnough(Game game) {
+        return repository.findGameUsesByGameId(game.getId()) >= MAX_GAME_USES;
+    }
+
     private void fetchMoreGamesIfNeeded() {
         if (repository.getGamesCount() < LOW_GAMES_THRESHOLD) {
             Timber.i("Game number went below threshold(%s), fetching new ones");

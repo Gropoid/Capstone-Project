@@ -57,6 +57,7 @@ public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> imple
             if (mInteractor.nextQuestion()) {
                 mView.showQuestion(mInteractor.getCurrentQuestion());
             } else {
+                mInteractor.finishQuizz();
                 mView.showEndGame();
             }
         }

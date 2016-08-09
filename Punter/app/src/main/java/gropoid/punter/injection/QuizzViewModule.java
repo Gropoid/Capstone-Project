@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import dagger.Module;
 import dagger.Provides;
+import gropoid.punter.data.PunterState;
 import gropoid.punter.data.Repository;
 import gropoid.punter.domain.GameManager;
 import gropoid.punter.domain.QuestionManager;
@@ -16,8 +17,8 @@ import gropoid.punter.presenter.loader.PresenterFactory;
 @Module
 public final class QuizzViewModule {
     @Provides
-    public QuizzInteractor provideInteractor(QuestionManager questionManager) {
-        return new QuizzInteractorImpl(questionManager);
+    public QuizzInteractor provideInteractor(QuestionManager questionManager, PunterState punterState) {
+        return new QuizzInteractorImpl(questionManager, punterState);
     }
 
     @Provides

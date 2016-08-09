@@ -96,7 +96,9 @@ public class QuestionManager {
                             question.getType(), question.getCorrectAnswerCriterion());
                     return null;
                 }
-            } while (isGameCorrectAnswerFor(game, question) || isGameAlreadyInQuestion(game, question));
+            } while (isGameCorrectAnswerFor(game, question)
+                    || isGameAlreadyInQuestion(game, question)
+                    || gameManager.wasGameUsedEnough(game));
             if (question.getGames()[i] == null) {
                 question.getGames()[i] = game;
             }

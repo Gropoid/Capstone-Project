@@ -11,4 +11,6 @@ public interface QuizzInteractor extends BaseInteractor {
     boolean submitAnswer(int answer);
 
     boolean nextQuestion();
+
+    void finishQuizz();
 }

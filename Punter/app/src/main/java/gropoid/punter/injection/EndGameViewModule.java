@@ -2,6 +2,7 @@ package gropoid.punter.injection;
 
 import android.support.annotation.NonNull;
 
+import gropoid.punter.data.PunterState;
 import gropoid.punter.interactor.EndGameInteractor;
 import gropoid.punter.interactor.impl.EndGameInteractorImpl;
 import gropoid.punter.presenter.loader.PresenterFactory;
@@ -14,8 +15,8 @@ import dagger.Provides;
 @Module
 public final class EndGameViewModule {
     @Provides
-    public EndGameInteractor provideInteractor() {
-        return new EndGameInteractorImpl();
+    public EndGameInteractor provideInteractor(PunterState punterState) {
+        return new EndGameInteractorImpl(punterState);
     }
 
     @Provides

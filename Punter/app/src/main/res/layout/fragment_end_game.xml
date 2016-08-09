@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
     tools:context=".view.impl.EndGameFragment">
 
-</FrameLayout>
+    <TextView
+        style="@style/FatText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/score_label" />
+
+    <TextView
+        android:id="@+id/score"
+        style="@style/FattestText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/home"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/home" />
+
+    <Button
+        android:id="@+id/new_game"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/new_game" />
+
+</LinearLayout>

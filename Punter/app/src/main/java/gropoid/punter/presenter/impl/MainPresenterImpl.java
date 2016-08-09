@@ -49,7 +49,7 @@ public final class MainPresenterImpl extends BasePresenterImpl<MainView> impleme
     }
 
     @Override
-    public void loadCurrentStatus() {
+    public void loadCurrentState() {
         if (mView != null) {
             switch (mInteractor.getCurrentState()) {
                 case PunterState.HOME:
@@ -65,5 +65,20 @@ public final class MainPresenterImpl extends BasePresenterImpl<MainView> impleme
         } else {
             Timber.w("mView was null");
         }
+    }
+
+    @Override
+    public void setCurrentStateHome() {
+        mInteractor.setCurrentStateHome();
+    }
+
+    @Override
+    public void setCurrentStateQuizz() {
+        mInteractor.setCurrentStateQuizz();
+    }
+
+    @Override
+    public void setCurrentStateEndGame() {
+        mInteractor.setCurrentStateEndGame();
     }
 }

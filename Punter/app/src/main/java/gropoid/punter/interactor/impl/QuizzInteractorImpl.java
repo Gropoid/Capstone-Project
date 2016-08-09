@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import gropoid.punter.data.PunterState;
 import gropoid.punter.domain.Question;
 import gropoid.punter.domain.QuestionManager;
 import gropoid.punter.interactor.QuizzInteractor;
@@ -13,14 +14,18 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
     @Inject
     QuestionManager questionManager;
 
+    @Inject
+    PunterState punterState;
+
     List<Question> quizz;
 
     int currentQuestion = -1;
     private int score = 0;
 
     @Inject
-    public QuizzInteractorImpl(QuestionManager questionManager) {
+    public QuizzInteractorImpl(QuestionManager questionManager, PunterState punterState) {
         this.questionManager = questionManager;
+        this.punterState = punterState;
     }
 
     @Override
@@ -56,5 +61,10 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
         questionManager.expireQuestion(quizz.get(currentQuestion));
         currentQuestion++;
         return currentQuestion < QUESTIONS_COUNT;
+    }
+
+    @Override
+    public void finishQuizz() {
+        punterState.setScore(score);
     }
 }

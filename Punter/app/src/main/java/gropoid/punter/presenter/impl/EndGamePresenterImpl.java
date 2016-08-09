@@ -2,11 +2,11 @@ package gropoid.punter.presenter.impl;
 
 import android.support.annotation.NonNull;
 
+import javax.inject.Inject;
+
+import gropoid.punter.interactor.EndGameInteractor;
 import gropoid.punter.presenter.EndGamePresenter;
 import gropoid.punter.view.EndGameView;
-import gropoid.punter.interactor.EndGameInteractor;
-
-import javax.inject.Inject;
 
 public final class EndGamePresenterImpl extends BasePresenterImpl<EndGameView> implements EndGamePresenter {
     /**
@@ -27,6 +27,8 @@ public final class EndGamePresenterImpl extends BasePresenterImpl<EndGameView> i
         super.onStart(firstStart);
 
         // Your code here. Your view is available using mView and will not be null until next onStop()
+        assert mView != null;
+        mView.displayScore(mInteractor.getGameScore());
     }
 
     @Override

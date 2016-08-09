@@ -123,7 +123,7 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
     @Override
     public void showQuestion(Question question) {
         if (question == null) {
-            Timber.e("Noquestions in db)");
+            Timber.e("No questions in db)");
             host.showEndGame();
         } else {
             this.question.setText(question.getWording());

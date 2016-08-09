@@ -5,7 +5,7 @@ import gropoid.punter.view.impl.EndGameFragment;
 import dagger.Component;
 
 @FragmentScope
-@Component(dependencies = AppComponent.class, modules = EndGameViewModule.class)
+@Component(modules = {EndGameViewModule.class, DataAccessModule.class})
 public interface EndGameViewComponent {
     void inject(EndGameFragment fragment);
 }
