@@ -17,6 +17,7 @@ import butterknife.OnClick;
 import gropoid.punter.R;
 import gropoid.punter.injection.AppComponent;
 import gropoid.punter.injection.DaggerHomeViewComponent;
+import gropoid.punter.injection.DataAccessModule;
 import gropoid.punter.injection.HomeViewModule;
 import gropoid.punter.presenter.HomePresenter;
 import gropoid.punter.presenter.loader.PresenterFactory;
@@ -56,8 +57,8 @@ public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> im
     @Override
     protected void setupComponent(@NonNull AppComponent parentComponent) {
         DaggerHomeViewComponent.builder()
-                .appComponent(parentComponent)
                 .homeViewModule(new HomeViewModule())
+                .dataAccessModule(new DataAccessModule(getContext()))
                 .build()
                 .inject(this);
     }

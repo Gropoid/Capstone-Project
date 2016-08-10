@@ -23,7 +23,7 @@ public class GameManager {
     public static final String IMAGE_FOLDER = "images/";
     public static final String IMAGE_FILE = "image";
     private static final int MAX_GAME_USES = 10;
-    private static final int LOW_GAMES_THRESHOLD = 60;
+    private static final int LOW_GAMES_THRESHOLD = 30;
 
     @Inject
     Context context;
@@ -66,7 +66,6 @@ public class GameManager {
         repository.save(game);
         return game;
     }
-
 
     @VisibleForTesting
     String getImageExtension(String imageUrl) {
@@ -123,7 +122,7 @@ public class GameManager {
     }
 
     private void fetchMoreGamesIfNeeded() {
-        if (repository.getGamesCount() < LOW_GAMES_THRESHOLD) {
+        if (isGameDbStarved()) {
             Timber.i("Game number went below threshold(%s), fetching new ones");
             GameFetchIntentService.startFetchGames(context);
         }
@@ -136,5 +135,15 @@ public class GameManager {
     public void setCurrentApiGameOffset(int offset) {
         Timber.i("New api game offset : %s", offset);
         punterState.setCurrentApiGameOffset(offset);
+    }
+
+    public boolean isGameDbStarved() {
+        return repository.getGamesCount() < LOW_GAMES_THRESHOLD;
+    }
+
+    public int getLoadingProgress() {
+        int progress = repository.getGamesCount() * 90 / LOW_GAMES_THRESHOLD;
+        Timber.v("Loading progress : %s", progress);
+        return progress;
     }
 }

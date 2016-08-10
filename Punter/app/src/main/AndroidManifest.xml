@@ -20,9 +20,19 @@
                 <action android:name="gropoid.punter.retrofit.action.ACTION_FETCH_GAMES" />
             </intent-filter>
         </service>
+
         <activity
             android:name=".view.impl.DebugActivity"
             android:exported="true"
+            android:parentActivityName=".view.impl.MainActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".view.impl.SignInActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.impl.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,12 +40,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.impl.SignInActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".view.impl.MainActivity"
-            android:screenOrientation="portrait" />
+
         <provider
             android:name=".data.PunterProvider"
             android:authorities="gropoid.punter.provider"

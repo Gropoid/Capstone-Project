@@ -99,4 +99,5 @@ public final class DebugActivity extends BaseActivity<DebugPresenter, DebugView>
     public void onClick() {
         startActivity(new Intent(this, MainActivity.class));
     }
+
 }

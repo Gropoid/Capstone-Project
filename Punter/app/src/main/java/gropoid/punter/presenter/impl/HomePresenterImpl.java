@@ -2,11 +2,11 @@ package gropoid.punter.presenter.impl;
 
 import android.support.annotation.NonNull;
 
+import javax.inject.Inject;
+
+import gropoid.punter.interactor.HomeInteractor;
 import gropoid.punter.presenter.HomePresenter;
 import gropoid.punter.view.HomeView;
-import gropoid.punter.interactor.HomeInteractor;
-
-import javax.inject.Inject;
 
 public final class HomePresenterImpl extends BasePresenterImpl<HomeView> implements HomePresenter {
     /**
@@ -27,6 +27,7 @@ public final class HomePresenterImpl extends BasePresenterImpl<HomeView> impleme
         super.onStart(firstStart);
 
         // Your code here. Your view is available using mView and will not be null until next onStop()
+        mInteractor.syncIfneeded();
     }
 
     @Override

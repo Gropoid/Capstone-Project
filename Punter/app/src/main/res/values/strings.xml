@@ -7,4 +7,6 @@
     <string name="home">Home</string>
     <string name="new_game">New Game</string>
     <string name="score_label">Game over!!\nYour score is :</string>
+    <string name="debug_menu_item">Debug</string>
+    <string name="loading_label">Loading …</string>
 </resources>

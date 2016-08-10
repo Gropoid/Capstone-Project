@@ -14,10 +14,10 @@ import timber.log.Timber;
 
 public class QuestionManager {
     private static final int MAX_TYPES = 3;
-    public static final int POSSIBLE_ANSWERS = 4;
+    private static final int POSSIBLE_ANSWERS = 4;
     public static final int MAX_LOOPS = 15;
     private static final int LOW_QUESTIONS_THRESHOLD = 60;
-    private static final int QUESTION_GENERATION_POOL_SIZE = 100;
+    public static final int QUESTION_GENERATION_POOL_SIZE = 100;
     private List<Game> gamePool;
     private Hashtable<Long, Platform> platformPool;
 
@@ -200,8 +200,12 @@ public class QuestionManager {
             gameManager.useGame(game);
         }
         repository.delete(question);
-        if (repository.getQuestionsCount() < LOW_QUESTIONS_THRESHOLD) {
+        if (isQuestionDbStarved()) {
             generateQuestions(QUESTION_GENERATION_POOL_SIZE);
         }
+    }
+
+    public boolean isQuestionDbStarved() {
+        return repository.getQuestionsCount() < LOW_QUESTIONS_THRESHOLD;
     }
 }

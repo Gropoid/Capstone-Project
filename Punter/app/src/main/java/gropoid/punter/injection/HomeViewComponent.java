@@ -5,7 +5,7 @@ import gropoid.punter.view.impl.HomeFragment;
 import dagger.Component;
 
 @FragmentScope
-@Component(dependencies = AppComponent.class, modules = HomeViewModule.class)
+@Component(modules = {HomeViewModule.class, DataAccessModule.class})
 public interface HomeViewComponent {
     void inject(HomeFragment fragment);
 }

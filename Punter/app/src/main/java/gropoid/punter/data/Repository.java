@@ -226,6 +226,7 @@ public class Repository {
         }
     }
 
+
     public List<Question> findQuestions(int count) {
         List<Question> questions = new ArrayList<>(count);
         Cursor c = contentResolver.query(

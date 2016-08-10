@@ -1,5 +1,6 @@
 package gropoid.punter.injection;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import dagger.Module;
@@ -17,8 +18,8 @@ import gropoid.punter.presenter.loader.PresenterFactory;
 @Module
 public final class QuizzViewModule {
     @Provides
-    public QuizzInteractor provideInteractor(QuestionManager questionManager, PunterState punterState) {
-        return new QuizzInteractorImpl(questionManager, punterState);
+    public QuizzInteractor provideInteractor(Context context, QuestionManager questionManager, GameManager gameManager, PunterState punterState) {
+        return new QuizzInteractorImpl(context, questionManager, gameManager, punterState);
     }
 
     @Provides

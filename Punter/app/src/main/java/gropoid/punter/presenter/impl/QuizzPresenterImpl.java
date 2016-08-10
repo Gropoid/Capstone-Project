@@ -4,12 +4,11 @@ import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 
-import gropoid.punter.domain.Question;
 import gropoid.punter.interactor.QuizzInteractor;
 import gropoid.punter.presenter.QuizzPresenter;
 import gropoid.punter.view.QuizzView;
 
-public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> implements QuizzPresenter {
+public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> implements QuizzPresenter, LoadingCallback {
     /**
      * The interactor
      */
@@ -28,15 +27,15 @@ public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> imple
         super.onStart(firstStart);
 
         // Your code here. Your view is available using mView and will not be null until next onStop()
-        Question question = mInteractor.getCurrentQuestion();
         assert mView != null;
-        mView.showQuestion(question);
+        mView.showLoading(0);
+        mInteractor.prepareQuizz(this);
     }
 
     @Override
     public void onStop() {
         // Your code here, mView will be null after this method until next onStart()
-
+        mInteractor.unregisterReceiver();
         super.onStop();
     }
 
@@ -60,6 +59,23 @@ public final class QuizzPresenterImpl extends BasePresenterImpl<QuizzView> imple
                 mInteractor.finishQuizz();
                 mView.showEndGame();
             }
+        }
+    }
+
+    @Override
+    public void onLoadingProgress(int progress) {
+        if (mView != null) {
+            mView.showLoading(progress);
+            if (progress >= 100) {
+                mView.showQuestion(mInteractor.getCurrentQuestion());
+            }
+        }
+    }
+
+    @Override
+    public void onLoadingFailure() {
+        if (mView != null) {
+            mView.displayLoadingError();
         }
     }
 }

@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,14 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
     GameView game3;
 
     QuizzFragmentListener host;
+    @BindView(R.id.first_row)
+    LinearLayout firstRow;
+    @BindView(R.id.second_row)
+    LinearLayout secondRow;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.progress_label)
+    TextView progressLabel;
 
     // Your presenter is available using the mPresenter variable
 
@@ -142,5 +152,29 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
     @Override
     public void showEndGame() {
         host.showEndGame();
+    }
+
+    @Override
+    public void showLoading(int progress) {
+        Timber.v("showing progress value %s", progress);
+        if (progress == 0) {
+            firstRow.setVisibility(View.GONE);
+            secondRow.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            progressLabel.setVisibility(View.VISIBLE);
+        } else if (progress >= 100) {
+            firstRow.setVisibility(View.VISIBLE);
+            secondRow.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            progressLabel.setVisibility(View.GONE);
+        } else {
+            progressBar.setProgress(progress);
+        }
+    }
+
+    @Override
+    public void displayLoadingError() {
+        Toast.makeText(getContext(), "No more data. Try connecting to the internet to refresh quizz data.", Toast.LENGTH_LONG).show();
+        host.showHome();
     }
 }

@@ -36,7 +36,7 @@ public class PunterState {
     }
 
     public int getCurrentState() {
-        return sharedPreferences.getInt(CURRENT_STATE, QUIZZ);
+        return sharedPreferences.getInt(CURRENT_STATE, HOME);
     }
 
     public int getCurrentApiGameOffset() {

@@ -1,6 +1,7 @@
 package gropoid.punter.interactor;
 
 import gropoid.punter.domain.Question;
+import gropoid.punter.presenter.impl.LoadingCallback;
 
 public interface QuizzInteractor extends BaseInteractor {
 
@@ -13,4 +14,8 @@ public interface QuizzInteractor extends BaseInteractor {
     boolean nextQuestion();
 
     void finishQuizz();
+
+    void prepareQuizz(LoadingCallback callback);
+
+    void unregisterReceiver();
 }

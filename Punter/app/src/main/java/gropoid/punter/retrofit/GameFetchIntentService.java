@@ -22,15 +22,21 @@ import timber.log.Timber;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p/>
+ * <p>
  */
 public class GameFetchIntentService extends IntentService {
     private static final String ACTION_FETCH_GAMES = "gropoid.punter.retrofit.action.ACTION_FETCH_GAMES";
+
+    public static final String FETCHING_PROGRESS = "gropoid.punter.retrofit.action.FETCHING_PROGRESS";
+    public static final String FETCHING_FAILURE = "gropoid.punter.retrofit.action.FETCHING_FAILURE";
+    public static final String PROGRESS_VALUE = "ProgressValue";
 
     @Inject
     GiantBombApi giantBombApi;
     @Inject
     GameManager gameManager;
+
+    private boolean notify;
 
     public GameFetchIntentService() {
         super("GameFetchIntentService");
@@ -70,6 +76,7 @@ public class GameFetchIntentService extends IntentService {
 
 
     private void fetchGames() {
+        notify = true;
         Call<Page<GameDTO>> call = giantBombApi.getGames(gameManager.getCurrentApiGameOffset());
         try {
             Response<Page<GameDTO>> response = call.execute();
@@ -77,12 +84,17 @@ public class GameFetchIntentService extends IntentService {
                 Timber.v("fetched data from api :\n%s", response.body());
                 Page<GameDTO> page = response.body();
                 gameManager.setCurrentApiGameOffset(page.getOffset() + page.getNumber_of_page_results());
+                broadcast(FETCHING_PROGRESS);
                 for (GameDTO gameDto : page.getResults()) {
                     fetchImageAndSave(gameDto);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (gameManager.isGameDbStarved()) {
+            // we tried to download 100 games and failed
+            broadcast(FETCHING_FAILURE);
         }
     }
 
@@ -99,9 +111,26 @@ public class GameFetchIntentService extends IntentService {
             if (response.isSuccessful()) {
                 Timber.v("Successfully retrieved image for game %s", gameDto.getName());
                 gameManager.save(gameDto.toGame(), gameDto.getImage().getMediumUrl(), response.body().bytes());
+                broadcast(FETCHING_PROGRESS);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void broadcast(String gameDbState) {
+        if (notify) {
+            Intent intent = new Intent();
+            intent.setAction(gameDbState);
+
+            if (FETCHING_PROGRESS.equals(gameDbState)) {
+                int progress = gameManager.getLoadingProgress() + 10; // +10 for the initial JSON fetching
+                intent.putExtra(PROGRESS_VALUE, progress);
+                if (progress >= 100) {
+                    notify = false;
+                }
+            }
+            getApplicationContext().sendBroadcast(intent);
         }
     }
 }

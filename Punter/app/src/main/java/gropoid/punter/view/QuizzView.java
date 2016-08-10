@@ -12,4 +12,8 @@ public interface QuizzView {
     void showResult(boolean b);
 
     void showEndGame();
+
+    void showLoading(int progress);
+
+    void displayLoadingError();
 }

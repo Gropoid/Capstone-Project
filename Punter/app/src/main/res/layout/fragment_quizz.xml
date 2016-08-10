@@ -10,11 +10,12 @@
         android:id="@+id/question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:gravity="center"
-        tools:text="Which of these games was NOT released in 2009?"
-        android:layout_margin="8dp"/>
+        tools:text="Which of these games was NOT released in 2009?" />
 
     <LinearLayout
+        android:id="@+id/first_row"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -25,8 +26,8 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            tools:text="game 0"
-            tools:ignore="NestedWeights" />
+            tools:ignore="NestedWeights"
+            tools:text="game 0" />
 
         <gropoid.punter.view.impl.GameView
             android:id="@+id/game1"
@@ -38,6 +39,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/second_row"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -48,18 +50,33 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            tools:text="game 2"
-            tools:ignore="NestedWeights" />
+            tools:ignore="NestedWeights"
+            tools:text="game 2" />
 
         <gropoid.punter.view.impl.GameView
             android:id="@+id/game3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="8dp"
+            android:layout_weight="1"
             tools:text="game 3" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/progress_label"
+        style="@style/FatText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="24dp"
+        android:text="@string/loading_label" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:max="100" />
 </LinearLayout>
 

@@ -1,21 +1,22 @@
 package gropoid.punter.injection;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
-
-import gropoid.punter.interactor.HomeInteractor;
-import gropoid.punter.interactor.impl.HomeInteractorImpl;
-import gropoid.punter.presenter.loader.PresenterFactory;
-import gropoid.punter.presenter.HomePresenter;
-import gropoid.punter.presenter.impl.HomePresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
+import gropoid.punter.domain.GameManager;
+import gropoid.punter.interactor.HomeInteractor;
+import gropoid.punter.interactor.impl.HomeInteractorImpl;
+import gropoid.punter.presenter.HomePresenter;
+import gropoid.punter.presenter.impl.HomePresenterImpl;
+import gropoid.punter.presenter.loader.PresenterFactory;
 
 @Module
 public final class HomeViewModule {
     @Provides
-    public HomeInteractor provideInteractor() {
-        return new HomeInteractorImpl();
+    public HomeInteractor provideInteractor(Context context, GameManager gameManager) {
+        return new HomeInteractorImpl(context, gameManager);
     }
 
     @Provides
