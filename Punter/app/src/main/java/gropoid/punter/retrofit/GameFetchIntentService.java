@@ -1,8 +1,12 @@
 package gropoid.punter.retrofit;
 
 import android.app.IntentService;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import java.io.IOException;
 
@@ -35,6 +39,10 @@ public class GameFetchIntentService extends IntentService {
     GiantBombApi giantBombApi;
     @Inject
     GameManager gameManager;
+    @Inject
+    ConnectivityManager connectivityManager;
+    @Inject
+    PackageManager packageManager;
 
     private boolean notify;
 
@@ -59,24 +67,40 @@ public class GameFetchIntentService extends IntentService {
      */
     public static void startFetchGames(Context context) {
         Intent intent = new Intent(context, GameFetchIntentService.class);
-        intent.setAction(ACTION_FETCH_GAMES);
         context.startService(intent);
     }
 
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_FETCH_GAMES.equals(action)) {
-                fetchGames();
-            }
+        notify = true;
+        if(isConnectionAvailable()) {
+            fetchGames();
+        } else {
+            broadcast(FETCHING_FAILURE);
+            toggleConnectivityReceiver(true);
         }
     }
 
+    private void toggleConnectivityReceiver(boolean enable) {
+        Timber.v("toggleConnectivityReceiver(%s)", enable);
+        ComponentName componentName =
+                new ComponentName(getApplicationContext(),
+                        ConnectivityReceiver.class);
+        packageManager.setComponentEnabledSetting(componentName,
+                enable ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                        : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    private boolean isConnectionAvailable() {
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
 
     private void fetchGames() {
-        notify = true;
         Call<Page<GameDTO>> call = giantBombApi.getGames(gameManager.getCurrentApiGameOffset());
         try {
             Response<Page<GameDTO>> response = call.execute();
