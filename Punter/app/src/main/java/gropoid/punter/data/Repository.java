@@ -148,6 +148,8 @@ public class Repository {
         contentValues.put(QuestionEntry.COLUMN_ANSWER4, question.getGames()[3].getId());
         contentValues.put(QuestionEntry.COLUMN_CORRECT_ANSWER, question.getCorrectAnswer().getId());
         contentValues.put(QuestionEntry.COLUMN_CRITERION, question.getCorrectAnswerCriterion());
+        contentValues.put(QuestionEntry.COLUMN_WORDING, question.getWording());
+
 
         contentResolver.insert(
                 QuestionEntry.CONTENT_URI,
@@ -224,6 +226,7 @@ public class Repository {
         }
     }
 
+
     public List<Question> findQuestions(int count) {
         List<Question> questions = new ArrayList<>(count);
         Cursor c = contentResolver.query(
@@ -235,22 +238,29 @@ public class Repository {
         );
         if (c != null && c.moveToFirst()) {
             do {
-                Question question = new Question();
-                question.setId(c.getLong(c.getColumnIndex(QuestionEntry._ID)));
-                question.setCorrectAnswer(findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_CORRECT_ANSWER))));
-                Game[] games = new Game[4];
-                games[0] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER1)));
-                games[1] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER2)));
-                games[2] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER3)));
-                games[3] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER4)));
-                question.setGames(games);
-                question.setType(c.getInt(c.getColumnIndex(QuestionEntry.COLUMN_TYPE)));
-                question.setCorrectAnswerCriterion(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_CRITERION)));
+                Question question = getQuestionFromCursor(c);
                 questions.add(question);
             } while (c.moveToNext());
             c.close();
         }
         return questions;
+    }
+
+    @NonNull
+    private Question getQuestionFromCursor(Cursor c) {
+        Question question = new Question();
+        question.setId(c.getLong(c.getColumnIndex(QuestionEntry._ID)));
+        question.setCorrectAnswer(findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_CORRECT_ANSWER))));
+        Game[] games = new Game[4];
+        games[0] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER1)));
+        games[1] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER2)));
+        games[2] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER3)));
+        games[3] = findGameById(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_ANSWER4)));
+        question.setGames(games);
+        question.setType(c.getInt(c.getColumnIndex(QuestionEntry.COLUMN_TYPE)));
+        question.setCorrectAnswerCriterion(c.getLong(c.getColumnIndex(QuestionEntry.COLUMN_CRITERION)));
+        question.setWording(c.getString(c.getColumnIndex(QuestionEntry.COLUMN_WORDING)));
+        return question;
     }
 
     public Game findGameById(long id) {
@@ -267,5 +277,67 @@ public class Repository {
             c.close();
         }
         return game;
+    }
+
+    public int findGameUsesByGameId(long id) {
+        int gameUses = -1;
+        Cursor c = contentResolver.query(
+                GameEntry.CONTENT_URI,
+                new String[]{GameEntry.COLUMN_USES},
+                GameEntry.COLUMN_GIANT_BOMB_ID + " = ?",
+                new String[]{String.valueOf(id)},
+                null
+        );
+        if (c != null && c.moveToFirst()) {
+            gameUses = c.getInt(c.getColumnIndex(GameEntry.COLUMN_USES));
+            c.close();
+        }
+        return gameUses;
+    }
+
+    public int updateGameUsesById(long id, int uses) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(GameEntry.COLUMN_USES, uses);
+        return contentResolver.update(GameEntry.CONTENT_URI,
+                contentValues,
+                GameEntry.COLUMN_GIANT_BOMB_ID + " = ?",
+                new String[]{String.valueOf(id)}
+        );
+    }
+
+    public int getGamesCount() {
+        Cursor c = contentResolver.query(GameEntry.CONTENT_URI, new String[]{"count(*)"}, null, null, null);
+        if (c == null) {
+            return 0;
+        }
+        if (c.getCount() == 0) {
+            c.close();
+            return 0;
+        } else {
+            c.moveToFirst();
+            int result = c.getInt(0);
+            c.close();
+            return result;
+        }
+    }
+
+    public void delete(Game game) {
+        if (contentResolver.delete(
+                GameEntry.CONTENT_URI,
+                GameEntry.COLUMN_GIANT_BOMB_ID + " = ?",
+                new String[]{String.valueOf(game.getId())}
+        ) != 1) {
+            Timber.w("Trying to delete nonexistant game (%s)", game.getName());
+        }
+    }
+
+    public void delete(Question question) {
+        if (contentResolver.delete(
+                QuestionEntry.CONTENT_URI,
+                QuestionEntry._ID + " = ?",
+                new String[]{String.valueOf(question.getId())}
+        ) != 1) {
+            Timber.w("Trying to delete nonexistant question (%s)", question.getId());
+        }
     }
 }

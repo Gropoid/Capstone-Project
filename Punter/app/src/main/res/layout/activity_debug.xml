@@ -10,6 +10,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".view.impl.DebugActivity">
 
+    <include layout="@layout/toolbar" />
+
     <Button
         android:id="@+id/fetch_games_button"
         android:layout_width="match_parent"
@@ -21,11 +23,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/generate_questions" />
+
     <Button
         android:id="@+id/get_questions_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/get_questions" />
 
+    <Button
+        android:id="@+id/main_activity_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/launch_main_activity" />
 
 </LinearLayout>

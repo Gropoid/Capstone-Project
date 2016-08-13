@@ -12,6 +12,14 @@ public class Question {
 
     private long correctAnswerCriterion;
 
+    private String wording;
+
+    public class Type {
+        public static final int RELEASE_DATE = 0;
+        public static final int WAS_RELEASED_ON_PLATFORM = 1;
+        public static final int WAS_NEVER_RELEASED_ON_PLATFORM = 2;
+    }
+
     public long getId() {
         return id;
     }
@@ -51,4 +59,13 @@ public class Question {
     public long getCorrectAnswerCriterion() {
         return correctAnswerCriterion;
     }
+
+    public String getWording() {
+        return wording;
+    }
+
+    public void setWording(String wording) {
+        this.wording = wording;
+    }
+
 }

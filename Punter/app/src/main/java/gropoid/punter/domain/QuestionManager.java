@@ -2,20 +2,24 @@ package gropoid.punter.domain;
 
 import java.security.InvalidParameterException;
 import java.util.Calendar;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import gropoid.punter.data.Repository;
+import gropoid.punter.domain.Question.Type;
 import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 public class QuestionManager {
     private static final int MAX_TYPES = 3;
-    public static final int POSSIBLE_ANSWERS = 4;
-    public static final int MAX_LOOPS = 15;
+    private static final int POSSIBLE_ANSWERS = 4;
+    private static final int MAX_LOOPS = 15;
+    private static final int LOW_QUESTIONS_THRESHOLD = 60;
+    public static final int DEFAULT_QUESTION_POOL_SIZE = 100;
     private List<Game> gamePool;
-    private List<Platform> platformPool;
+    private Hashtable<Long, Platform> platformPool;
 
     @Inject
     GameManager gameManager;
@@ -24,8 +28,9 @@ public class QuestionManager {
     Repository repository;
 
     @Inject
-    public QuestionManager(GameManager gameManager) {
+    public QuestionManager(GameManager gameManager, Repository repository) {
         this.gameManager = gameManager;
+        this.repository = repository;
     }
 
     private int randType() {
@@ -44,16 +49,11 @@ public class QuestionManager {
         return (int) Math.floor(Math.random() * value);
     }
 
-    public class Type {
-        public static final int RELEASE_DATE = 0;
-        public static final int WAS_RELEASED_ON_PLATFORM = 1;
-        public static final int WAS_NEVER_RELEASED_ON_PLATFORM = 2;
-    }
-
     @DebugLog
     public void generateQuestions(int questionPoolSize) {
+        Timber.i("Generating %s questions...", questionPoolSize);
         gamePool = gameManager.getAllGames();
-        platformPool = gameManager.getAllPlatforms();
+        buildPlatformPool();
         if (gamePool.size() < 20) {
             Timber.w("Not enough games in db to generate questions");
             return;
@@ -62,12 +62,19 @@ public class QuestionManager {
             Timber.w("Not enough games in db to generate questions");
             return;
         }
-        while(repository.getQuestionsCount() < questionPoolSize) {
+        while (repository.getQuestionsCount() < questionPoolSize) {
             Question question = generateQuestion();
             if (question != null) {
                 repository.save(generateQuestion());
             }
             Timber.v("Questions count in db : %s ", repository.getQuestionsCount());
+        }
+    }
+
+    private void buildPlatformPool() {
+        platformPool = new Hashtable<>();
+        for (Platform platform : gameManager.getAllPlatforms()) {
+            platformPool.put(platform.getId(), platform);
         }
     }
 
@@ -77,6 +84,7 @@ public class QuestionManager {
         Game correctAnswer = gamePool.get(randGame());
         question.setCorrectAnswer(correctAnswer);
         question.setCorrectAnswerCriterion(makeUpCriterionForQuestion(question));
+        question.setWording(buildQuestionWording(question));
         question.getGames()[randOptions()] = correctAnswer;
         for (int i = 0; i < POSSIBLE_ANSWERS; i++) {
             Game game;
@@ -88,12 +96,49 @@ public class QuestionManager {
                             question.getType(), question.getCorrectAnswerCriterion());
                     return null;
                 }
-            } while (isGameCorrectAnswerFor(game, question));
+            } while (isGameCorrectAnswerFor(game, question)
+                    || isGameAlreadyInQuestion(game, question)
+                    || gameManager.wasGameUsedEnough(game));
             if (question.getGames()[i] == null) {
                 question.getGames()[i] = game;
             }
         }
         return question;
+    }
+
+    private boolean isGameAlreadyInQuestion(Game game, Question question) {
+        for (Game _game: question.getGames()) {
+            if ((_game != null) && game.getId() ==_game.getId())
+                return true;
+        }
+        return false;
+    }
+
+    private String buildQuestionWording(Question question) {
+        switch (question.getType()) {
+            case Type.RELEASE_DATE:
+                return buildReleaseDateWording(question.getCorrectAnswerCriterion());
+            case Type.WAS_RELEASED_ON_PLATFORM:
+                return buildReleasedOnPlatformWording(question.getCorrectAnswerCriterion());
+            case Type.WAS_NEVER_RELEASED_ON_PLATFORM:
+                return buildNotReleasedOnPlatformWording(question.getCorrectAnswerCriterion());
+            default:
+                throw new UnsupportedOperationException("Trying to build question wording without a type set");
+        }
+    }
+
+    private String buildNotReleasedOnPlatformWording(long correctAnswerCriterion) {
+
+        return String.format("Which of these games was never released on %s?", platformPool.get(correctAnswerCriterion).getName());
+
+    }
+
+    private String buildReleasedOnPlatformWording(long correctAnswerCriterion) {
+        return String.format("Which of these games was released on %s?", platformPool.get(correctAnswerCriterion).getName());
+    }
+
+    private String buildReleaseDateWording(long correctAnswerCriterion) {
+        return String.format("Which of these games was released in %s?", correctAnswerCriterion);
     }
 
     private long makeUpCriterionForQuestion(Question question) {
@@ -115,7 +160,7 @@ public class QuestionManager {
     private long findPlatformTheGameWasNeverReleasedOn(Game game) {
         Platform platform;
         do {
-            platform = platformPool.get(randomIntUnder(platformPool.size()));
+            platform = (Platform) platformPool.values().toArray()[randomIntUnder(platformPool.size())];
             Timber.d("Trying to find a platform the game was not released on");
         } while (gameWasReleasedOnPlatformWithId(game, platform.getId()));
         return platform.getId();
@@ -150,4 +195,17 @@ public class QuestionManager {
         return repository.findQuestions(count);
     }
 
+    public void expireQuestion(Question question) {
+        for (Game game : question.getGames()) {
+            gameManager.useGame(game);
+        }
+        repository.delete(question);
+        if (isQuestionDbStarved()) {
+            generateQuestions(DEFAULT_QUESTION_POOL_SIZE);
+        }
+    }
+
+    public boolean isQuestionDbStarved() {
+        return repository.getQuestionsCount() < LOW_QUESTIONS_THRESHOLD;
+    }
 }

@@ -1,6 +1,10 @@
 package gropoid.punter.injection;
 
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -49,6 +53,16 @@ public class NetworkModule {
                 .addInterceptor(logger)
                 .addInterceptor(new GiantBombInterceptor())
                 .build();
+    }
+
+    @Provides
+    public ConnectivityManager provideConnectivityManager(Context context) {
+        return (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
+
+    @Provides
+    public PackageManager providePackageManager(Context context) {
+        return context.getPackageManager();
     }
 
 }

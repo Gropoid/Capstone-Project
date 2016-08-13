@@ -3,4 +3,14 @@
     <string name="fetch_games_button_text">Fetch games</string>
     <string name="generate_questions">Generate questions</string>
     <string name="get_questions">Get questions</string>
+    <string name="launch_main_activity">Launch Main Activity</string>
+    <string name="home">Home</string>
+    <string name="new_game">New Game</string>
+    <string name="score_label">Game over!!\nYour score is :</string>
+    <string name="debug_menu_item">Debug</string>
+    <string name="loading_label">Loading …</string>
+    <string name="sign_in_why">Sign in to Play Games Services to participate in Leaderboards</string>
+    <string name="leaderboards">LeaderBoards</string>
+    <string name="app_id">481293289173</string>
+
 </resources>
