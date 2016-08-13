@@ -4,5 +4,7 @@ import android.support.annotation.UiThread;
 
 @UiThread
 public interface HomeView {
-    void showGooglePlayPanelIfNotConnected();
+    void toggleGooglePlayPanel(boolean visible);
+
+    void toggleLeaderboardsButton(boolean visible);
 }

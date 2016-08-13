@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import gropoid.punter.data.PunterContract.LocalHighScoreEntry;
 import gropoid.punter.domain.Game;
 import gropoid.punter.domain.Platform;
 import gropoid.punter.domain.Question;
@@ -25,6 +26,7 @@ import static gropoid.punter.data.PunterContract.QuestionEntry;
 
 public class Repository {
 
+    private static final String LOCAL_HIGH_SCORE_ID = "0";
     @Inject
     ContentResolver contentResolver;
 
@@ -338,6 +340,39 @@ public class Repository {
                 new String[]{String.valueOf(question.getId())}
         ) != 1) {
             Timber.w("Trying to delete nonexistant question (%s)", question.getId());
+        }
+    }
+
+    public int findLocalHighScore() {
+        int localHighScore = 0;
+        Cursor c = contentResolver.query(
+                LocalHighScoreEntry.CONTENT_URI,
+                new String[]{LocalHighScoreEntry.COLUMN_HIGH_SCORE},
+                LocalHighScoreEntry.COLUMN_ID + " = ?",
+                new String[]{LOCAL_HIGH_SCORE_ID},
+                null
+        );
+        if (c != null && c.moveToFirst()) {
+            localHighScore = c.getInt(c.getColumnIndex(LocalHighScoreEntry.COLUMN_HIGH_SCORE));
+            c.close();
+        }
+        return localHighScore;
+    }
+
+    public void saveLocalHighScore(int localHighScore) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(LocalHighScoreEntry.COLUMN_ID, LOCAL_HIGH_SCORE_ID);
+        contentValues.put(LocalHighScoreEntry.COLUMN_HIGH_SCORE, localHighScore);
+        int update_count = contentResolver.update(
+                LocalHighScoreEntry.CONTENT_URI,
+                contentValues,
+                LocalHighScoreEntry.COLUMN_ID + " = ?",
+                new String[]{LOCAL_HIGH_SCORE_ID}
+        );
+        if (update_count == 0) {
+            contentResolver.insert(
+                    LocalHighScoreEntry.CONTENT_URI,
+                    contentValues);
         }
     }
 }

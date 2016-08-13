@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import gropoid.punter.interactor.HomeInteractor;
 import gropoid.punter.presenter.HomePresenter;
 import gropoid.punter.view.HomeView;
+import gropoid.punter.view.PlayGamesHelper;
 
 public final class HomePresenterImpl extends BasePresenterImpl<HomeView> implements HomePresenter {
     /**
@@ -28,7 +29,6 @@ public final class HomePresenterImpl extends BasePresenterImpl<HomeView> impleme
 
         // Your code here. Your view is available using mView and will not be null until next onStop()
         assert mView != null;
-        mView.showGooglePlayPanelIfNotConnected();
         mInteractor.syncIfneeded();
     }
 
@@ -47,5 +47,18 @@ public final class HomePresenterImpl extends BasePresenterImpl<HomeView> impleme
          */
 
         super.onPresenterDestroyed();
+    }
+
+    @Override
+    public void setPlayGamesHelper(PlayGamesHelper playGamesHelper) {
+        mInteractor.setPlayGamesHelper(playGamesHelper);
+    }
+
+    @Override
+    public void checkGoogleApiConnected() {
+        if (mView != null) {
+            mView.toggleGooglePlayPanel(!mInteractor.isGooglePlayApiConnected());
+            mView.toggleLeaderboardsButton(mInteractor.isGooglePlayApiConnected());
+        }
     }
 }

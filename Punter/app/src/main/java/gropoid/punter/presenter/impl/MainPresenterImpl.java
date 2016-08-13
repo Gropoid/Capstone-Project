@@ -9,6 +9,7 @@ import gropoid.punter.interactor.MainInteractor;
 import gropoid.punter.presenter.MainPresenter;
 import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.MainView;
+import gropoid.punter.view.PlayGamesHelper;
 import gropoid.punter.view.impl.MainActivity;
 import timber.log.Timber;
 
@@ -112,5 +113,10 @@ public final class MainPresenterImpl extends BasePresenterImpl<MainView> impleme
     @Override
     public boolean isGooglePlayClientConnected() {
         return mInteractor.isGooglePlayClientConnected();
+    }
+
+    @Override
+    public PlayGamesHelper getPlayGamesHelper() {
+        return mInteractor.getPlayGamesHelper();
     }
 }

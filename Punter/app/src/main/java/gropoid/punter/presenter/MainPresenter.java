@@ -2,6 +2,7 @@ package gropoid.punter.presenter;
 
 import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.MainView;
+import gropoid.punter.view.PlayGamesHelper;
 import gropoid.punter.view.impl.MainActivity;
 
 public interface MainPresenter extends BasePresenter<MainView> {
@@ -18,4 +19,6 @@ public interface MainPresenter extends BasePresenter<MainView> {
     void notifyGoogleApiFailure();
     void setGoogleApiContext(MainActivity mainActivity);
     boolean isGooglePlayClientConnected();
+
+    PlayGamesHelper getPlayGamesHelper();
 }

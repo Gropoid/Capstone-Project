@@ -17,6 +17,7 @@ public class PunterContract {
     public static final String PATH_PLATFORM = "platform";
     public static final String PATH_GAME_PLATFORM = "gameplatform";
     public static final String PATH_QUESTION = "question";
+    public static final String PATH_LOCAL_HIGH_SCORE = "localhighscore";
 
     /* Table contents of the game table */
     public static final class GameEntry {
@@ -25,6 +26,7 @@ public class PunterContract {
         public static Uri buildGameUri(String id) {
             return BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAME).appendPath(id).build();
         }
+
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_GAME;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_GAME;
 
@@ -41,9 +43,11 @@ public class PunterContract {
 
     public static final class PlatformEntry {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLATFORM).build();
+
         public static Uri buildPlatformUri(String id) {
             return BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLATFORM).appendPath(id).build();
         }
+
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLATFORM;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLATFORM;
 
@@ -56,6 +60,7 @@ public class PunterContract {
 
     public static final class GamePlatformEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAME_PLATFORM).build();
+
         public static Uri buildGamePlatformUri(String id) {
             return BASE_CONTENT_URI.buildUpon().appendPath(PATH_GAME_PLATFORM).appendPath(id).build();
         }
@@ -76,6 +81,7 @@ public class PunterContract {
         public static Uri buildQuestionUri(String id) {
             return BASE_CONTENT_URI.buildUpon().appendPath(PATH_QUESTION).appendPath(id).build();
         }
+
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_QUESTION;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_QUESTION;
 
@@ -95,4 +101,15 @@ public class PunterContract {
 
     }
 
+    public static final class LocalHighScoreEntry {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_LOCAL_HIGH_SCORE).build();
+
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LOCAL_HIGH_SCORE;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LOCAL_HIGH_SCORE;
+
+        public static final String TABLE_NAME = "localhighscore";
+
+        public static final String COLUMN_ID = "id";
+        public static final String COLUMN_HIGH_SCORE = "high_score";
+    }
 }

@@ -14,6 +14,7 @@ public class PunterState {
     public static final String CURRENT_STATE = "CurrentState";
     private static final String CURRENT_API_GAME_PAGE = "CurrentApiGamePage";
     private static final String SCORE = "Score";
+    private static final String HIGH_SCORE_BUFFER = "HighScoreBuffer";
 
     @Inject
     SharedPreferences sharedPreferences;
@@ -53,5 +54,13 @@ public class PunterState {
 
     public void setScore(int score) {
         sharedPreferences.edit().putInt(SCORE, score).apply();
+    }
+
+    public void setHighScoreLocalBuffer(int score) {
+        sharedPreferences.edit().putInt(HIGH_SCORE_BUFFER, score).apply();
+    }
+
+    public int getHighScoreLocalBuffer() {
+        return sharedPreferences.getInt(HIGH_SCORE_BUFFER, -1);
     }
 }

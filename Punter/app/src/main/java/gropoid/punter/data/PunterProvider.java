@@ -32,6 +32,8 @@ public class PunterProvider extends ContentProvider {
 
     static final int GAME_PLATFORMS = 400;
 
+    static final int LOCAL_HIGH_SCORE = 500;
+
     public static final UriMatcher uriMatcher = buildUriMatcher();
 
     private static UriMatcher buildUriMatcher() {
@@ -42,6 +44,7 @@ public class PunterProvider extends ContentProvider {
         matcher.addURI(authority, PATH_PLATFORM, PLATFORMS);
         matcher.addURI(authority, PATH_QUESTION, QUESTIONS);
         matcher.addURI(authority, PATH_GAME_PLATFORM, GAME_PLATFORMS);
+        matcher.addURI(authority, PATH_LOCAL_HIGH_SCORE, LOCAL_HIGH_SCORE);
 
         return matcher;
     }
@@ -97,9 +100,21 @@ public class PunterProvider extends ContentProvider {
                         GamePlatformEntry.TABLE_NAME,
                         projection,
                         selection,
-                        selectionArgs, null,
+                        selectionArgs,
+                        null,
                         null,
                         sortOrder);
+                break;
+            case LOCAL_HIGH_SCORE:
+                retCursor = punterDbHelper.getReadableDatabase().query(
+                        LocalHighScoreEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -152,6 +167,11 @@ public class PunterProvider extends ContentProvider {
                 //noinspection ConstantConditions
                 getContext().getContentResolver().notifyChange(uri, null);
                 return QuestionEntry.CONTENT_URI;
+            case LOCAL_HIGH_SCORE:
+                db.insertOrThrow(LocalHighScoreEntry.TABLE_NAME, null, values);
+                //noinspection ConstantConditions
+                getContext().getContentResolver().notifyChange(uri, null);
+                return LocalHighScoreEntry.CONTENT_URI;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -180,6 +200,10 @@ public class PunterProvider extends ContentProvider {
                         selection, selectionArgs);
                 break;
             case QUESTIONS:
+                rowsDeleted = db.delete(QuestionEntry.TABLE_NAME,
+                        selection, selectionArgs);
+                break;
+            case LOCAL_HIGH_SCORE:
                 rowsDeleted = db.delete(QuestionEntry.TABLE_NAME,
                         selection, selectionArgs);
                 break;
@@ -217,6 +241,10 @@ public class PunterProvider extends ContentProvider {
                 break;
             case QUESTIONS:
                 rowsUpdated = db.update(QuestionEntry.TABLE_NAME, values,
+                        selection, selectionArgs);
+                break;
+            case LOCAL_HIGH_SCORE:
+                rowsUpdated = db.update(LocalHighScoreEntry.TABLE_NAME, values,
                         selection, selectionArgs);
                 break;
             default:

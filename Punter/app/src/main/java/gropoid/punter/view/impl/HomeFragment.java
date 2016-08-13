@@ -38,6 +38,8 @@ public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> im
     SignInButton signInButton;
     @BindView(R.id.sign_in_bar)
     LinearLayout signInBar;
+    @BindView(R.id.leaderboards)
+    Button leaderboards;
 
     private HomeFragmentInterface host;
 
@@ -87,6 +89,15 @@ public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> im
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        assert mPresenter != null;
+        if (host != null) {
+            mPresenter.setPlayGamesHelper(host.getPlayGamesHelper());
+            mPresenter.checkGoogleApiConnected();
+        }
+    }
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -108,19 +119,27 @@ public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> im
     @Override
     public void onConnectionSuccessful() {
         signInBar.setVisibility(View.GONE);
+        leaderboards.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onConnectionFailed() {
-        signInButton.setVisibility(View.VISIBLE);
+        signInBar.setVisibility(View.VISIBLE);
+        leaderboards.setVisibility(View.GONE);
     }
 
     @Override
-    public void showGooglePlayPanelIfNotConnected() {
-        if (host.isGooglePlayApiConnected()) {
-            onConnectionSuccessful();
-        } else {
-            onConnectionFailed();
-        }
+    public void toggleGooglePlayPanel(boolean visible) {
+        signInBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void toggleLeaderboardsButton(boolean visible) {
+        leaderboards.setVisibility(visible? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick(R.id.leaderboards)
+    public void onClick() {
+        host.showLeaderboards();
     }
 }

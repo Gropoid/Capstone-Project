@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import gropoid.punter.domain.GameManager;
 import gropoid.punter.interactor.HomeInteractor;
 import gropoid.punter.retrofit.GameFetchIntentService;
+import gropoid.punter.view.PlayGamesHelper;
 
 public final class HomeInteractorImpl implements HomeInteractor {
 
@@ -14,6 +15,8 @@ public final class HomeInteractorImpl implements HomeInteractor {
     GameManager gameManager;
     @Inject
     Context context;
+
+    private PlayGamesHelper playGamesHelper;
 
     public HomeInteractorImpl(Context context, GameManager gameManager) {
         this.context = context;
@@ -26,4 +29,16 @@ public final class HomeInteractorImpl implements HomeInteractor {
             GameFetchIntentService.startFetchGames(context);
         }
     }
+
+    @Override
+    public void setPlayGamesHelper(PlayGamesHelper playGamesHelper) {
+        this.playGamesHelper = playGamesHelper;
+    }
+
+    @Override
+    public boolean isGooglePlayApiConnected() {
+        return playGamesHelper.isSignedIn();
+    }
+
+
 }

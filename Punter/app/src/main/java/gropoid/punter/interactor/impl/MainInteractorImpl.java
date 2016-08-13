@@ -1,24 +1,33 @@
 package gropoid.punter.interactor.impl;
 
+import android.content.Context;
+
+import com.google.android.gms.games.Games;
+
 import javax.inject.Inject;
 
+import gropoid.punter.R;
 import gropoid.punter.data.PunterState;
 import gropoid.punter.interactor.MainInteractor;
 import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.PlayGamesHelper;
 import gropoid.punter.view.impl.MainActivity;
 
-public final class MainInteractorImpl implements MainInteractor {
+public final class MainInteractorImpl implements MainInteractor, GoogleApiStateListener {
 
+    @Inject
+    Context context;
     @Inject
     PunterState punterState;
     @Inject
     PlayGamesHelper playGamesHelper;
 
     @Inject
-    public MainInteractorImpl(PunterState punterState, PlayGamesHelper playGamesHelper) {
+    public MainInteractorImpl(Context context, PunterState punterState, PlayGamesHelper playGamesHelper) {
+        this.context = context;
         this.punterState = punterState;
         this.playGamesHelper = playGamesHelper;
+        playGamesHelper.registerListener(this);
     }
 
     @Override
@@ -74,5 +83,25 @@ public final class MainInteractorImpl implements MainInteractor {
     @Override
     public boolean isGooglePlayClientConnected() {
         return playGamesHelper.isSignedIn();
+    }
+
+    @Override
+    public PlayGamesHelper getPlayGamesHelper() {
+        return playGamesHelper;
+    }
+
+    @Override
+    public void onConnectionSuccessful() {
+        // submit score that were achieved before singing in, if one is pending
+        int bufferedScore = punterState.getHighScoreLocalBuffer();
+        if (bufferedScore != -1) {
+            Games.Leaderboards.submitScore(playGamesHelper.getGoogleApiClient(), context.getString(R.string.leaderboard_high_score), bufferedScore);
+            punterState.setHighScoreLocalBuffer(-1);
+        }
+    }
+
+    @Override
+    public void onConnectionFailed() {
+        // nothing
     }
 }

@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import gropoid.punter.interactor.EndGameInteractor;
 import gropoid.punter.presenter.EndGamePresenter;
 import gropoid.punter.view.EndGameView;
+import gropoid.punter.view.PlayGamesHelper;
 
 public final class EndGamePresenterImpl extends BasePresenterImpl<EndGameView> implements EndGamePresenter {
     /**
@@ -29,13 +30,11 @@ public final class EndGamePresenterImpl extends BasePresenterImpl<EndGameView> i
         // Your code here. Your view is available using mView and will not be null until next onStop()
         assert mView != null;
         mView.displayScore(mInteractor.getGameScore());
-        mView.displayLeaderboardsButtonIfConnected();
     }
 
     @Override
     public void onStop() {
         // Your code here, mView will be null after this method until next onStart()
-
         super.onStop();
     }
 
@@ -47,5 +46,22 @@ public final class EndGamePresenterImpl extends BasePresenterImpl<EndGameView> i
          */
 
         super.onPresenterDestroyed();
+    }
+
+    @Override
+    public void setPlayGamesHelper(PlayGamesHelper playGamesHelper) {
+        mInteractor.setPlayGamesHelper(playGamesHelper);
+    }
+
+    @Override
+    public void submitScore() {
+        mInteractor.submitScore();
+    }
+
+    @Override
+    public void checkGoogleApiConnected() {
+        if (mView != null) {
+            mView.toggleLeaderboardsButton(mInteractor.isPlayApiConnected());
+        }
     }
 }

@@ -1,5 +1,6 @@
 package gropoid.punter.injection;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import dagger.Module;
@@ -15,8 +16,8 @@ import gropoid.punter.view.PlayGamesHelper;
 @Module
 public final class MainViewModule {
     @Provides
-    public MainInteractor provideInteractor(PunterState punterState, PlayGamesHelper playGamesHelper) {
-        return new MainInteractorImpl(punterState, playGamesHelper);
+    public MainInteractor provideInteractor(Context context,  PunterState punterState, PlayGamesHelper playGamesHelper) {
+        return new MainInteractorImpl(context, punterState, playGamesHelper);
     }
 
     @Provides

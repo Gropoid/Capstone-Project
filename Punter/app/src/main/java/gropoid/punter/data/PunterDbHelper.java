@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import gropoid.punter.data.PunterContract.GameEntry;
 import gropoid.punter.data.PunterContract.GamePlatformEntry;
+import gropoid.punter.data.PunterContract.LocalHighScoreEntry;
 import gropoid.punter.data.PunterContract.PlatformEntry;
 import gropoid.punter.data.PunterContract.QuestionEntry;
 
@@ -24,11 +25,13 @@ public class PunterDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_PLATFORM_TABLE = createPlatformTable();
         final String SQL_CREATE_GAMEPLATFORM_TABLE = createGamePlatformTable();
         final String SQL_CREATE_QUESTION_TABLE = createQuestionTable();
+        final String SQL_CREATE_LOCAL_HIGHSCORE_TABLE = createHighScoreTable();
 
         db.execSQL(SQL_CREATE_GAME_TABLE);
         db.execSQL(SQL_CREATE_PLATFORM_TABLE);
         db.execSQL(SQL_CREATE_GAMEPLATFORM_TABLE);
         db.execSQL(SQL_CREATE_QUESTION_TABLE);
+        db.execSQL(SQL_CREATE_LOCAL_HIGHSCORE_TABLE);
     }
 
     @Override
@@ -37,6 +40,7 @@ public class PunterDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + PlatformEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + GamePlatformEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + QuestionEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + LocalHighScoreEntry.TABLE_NAME);
         onCreate(db);
     }
 
@@ -63,7 +67,7 @@ public class PunterDbHelper extends SQLiteOpenHelper {
     private String createGamePlatformTable() {
         return "CREATE TABLE " + GamePlatformEntry.TABLE_NAME + " (" +
                 GamePlatformEntry._ID + " INTEGER PRIMARY KEY, " +
-                GamePlatformEntry.COLUMN_GAME + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
+                GamePlatformEntry.COLUMN_GAME + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", " +
                 GamePlatformEntry.COLUMN_PLATFORM + " INTEGER REFERENCES " + PlatformEntry.TABLE_NAME +
                 ")";
     }
@@ -72,13 +76,20 @@ public class PunterDbHelper extends SQLiteOpenHelper {
         return "CREATE TABLE " + QuestionEntry.TABLE_NAME + " (" +
                 QuestionEntry._ID + " INTEGER PRIMARY KEY, " +
                 QuestionEntry.COLUMN_TYPE + " INTEGER, " +
-                QuestionEntry.COLUMN_ANSWER1 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
-                QuestionEntry.COLUMN_ANSWER2 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
-                QuestionEntry.COLUMN_ANSWER3 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
-                QuestionEntry.COLUMN_ANSWER4 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", "+
+                QuestionEntry.COLUMN_ANSWER1 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", " +
+                QuestionEntry.COLUMN_ANSWER2 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", " +
+                QuestionEntry.COLUMN_ANSWER3 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", " +
+                QuestionEntry.COLUMN_ANSWER4 + " INTEGER REFERENCES " + GameEntry.TABLE_NAME + ", " +
                 QuestionEntry.COLUMN_CORRECT_ANSWER + " INTEGER, " +
                 QuestionEntry.COLUMN_CRITERION + " INTEGER, " +
                 QuestionEntry.COLUMN_WORDING + " TEXT" +
+                ")";
+    }
+
+    private String  createHighScoreTable() {
+        return "CREATE TABLE " + LocalHighScoreEntry.TABLE_NAME  +" (" +
+                LocalHighScoreEntry.COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                LocalHighScoreEntry.COLUMN_HIGH_SCORE + " INTEGER" +
                 ")";
     }
 }

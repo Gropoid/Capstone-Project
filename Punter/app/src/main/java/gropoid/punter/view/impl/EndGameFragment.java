@@ -66,6 +66,12 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
     @Override
     public void onStart() {
         super.onStart();
+        assert mPresenter != null;
+        if (host != null) {
+            mPresenter.setPlayGamesHelper(host.getPlayGamesHelper());
+            mPresenter.submitScore();
+            mPresenter.checkGoogleApiConnected();
+        }
     }
 
     @Override
@@ -116,12 +122,8 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
     }
 
     @Override
-    public void displayLeaderboardsButtonIfConnected() {
-        if (host.isGooglePlayApiConnected()) {
-            leaderboards.setVisibility(View.VISIBLE);
-        } else {
-            leaderboards.setVisibility(View.GONE);
-        }
+    public void toggleLeaderboardsButton(boolean visible) {
+        leaderboards.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override

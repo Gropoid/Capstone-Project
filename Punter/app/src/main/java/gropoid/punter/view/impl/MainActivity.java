@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.facebook.stetho.BuildConfig;
+import com.google.android.gms.games.Games;
 
 import javax.inject.Inject;
 
@@ -33,6 +34,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
     private static final String QUIZZ_FRAGMENT_TAG = "QuizzFragmentTag";
     private static final String ENDGAME_FRAGMENT_TAG = "EndGameFragmentTag";
     private static final String HOME_FRAGMENT_TAG = "HomeFragmentTag";
+    private static final int RC_UNUSED = 5001;
     @Inject
     PresenterFactory<MainPresenter> mPresenterFactory;
     @BindView(R.id.main_frame)
@@ -46,7 +48,6 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        // Your code here
         // Do not call mPresenter from here, it will be null! Wait for onStart or onPostCreate.
         bindLayout();
     }
@@ -100,8 +101,6 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
     }
 
 
-
-
     @Override
     public void startQuizz() {
         if (mPresenter != null) {
@@ -127,14 +126,18 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
 
     @Override
     public void showLeaderboards() {
-
+        if (getPlayGamesHelper() != null) {
+            startActivityForResult(
+                    Games.Leaderboards.getAllLeaderboardsIntent(getPlayGamesHelper().getGoogleApiClient()),
+                    RC_UNUSED
+            );
+        }
     }
 
     @Override
-    public boolean isGooglePlayApiConnected() {
-        return (mPresenter != null && mPresenter.isGooglePlayClientConnected());
+    public PlayGamesHelper getPlayGamesHelper() {
+        return mPresenter != null ? mPresenter.getPlayGamesHelper() : null;
     }
-
 
     @Override
     public void showEndGame() {

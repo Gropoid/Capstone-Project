@@ -7,5 +7,5 @@ public interface EndGameView {
 
     void displayScore(int gameScore);
 
-    void displayLeaderboardsButtonIfConnected();
+    void toggleLeaderboardsButton(boolean visible);
 }

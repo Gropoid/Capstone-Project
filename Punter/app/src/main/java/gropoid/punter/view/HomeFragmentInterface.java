@@ -4,5 +4,5 @@ public interface HomeFragmentInterface {
     void startQuizz();
     void signIn();
     void showLeaderboards();
-    boolean isGooglePlayApiConnected();
+    PlayGamesHelper getPlayGamesHelper();
 }
