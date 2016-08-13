@@ -22,11 +22,13 @@ import gropoid.punter.injection.DataAccessModule;
 import gropoid.punter.injection.EndGameViewModule;
 import gropoid.punter.presenter.EndGamePresenter;
 import gropoid.punter.presenter.loader.PresenterFactory;
-import gropoid.punter.view.EndGameFragmentListener;
+import gropoid.punter.view.EndGameFragmentInterface;
 import gropoid.punter.view.EndGameView;
+import gropoid.punter.view.GoogleApiStateListener;
 import timber.log.Timber;
 
-public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGameView> implements EndGameView {
+public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGameView>
+        implements EndGameView, GoogleApiStateListener {
     @Inject
     PresenterFactory<EndGamePresenter> mPresenterFactory;
     @BindView(R.id.score)
@@ -35,8 +37,10 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
     Button home;
     @BindView(R.id.new_game)
     Button newGame;
+    @BindView(R.id.leaderboards)
+    Button leaderboards;
 
-    private EndGameFragmentListener host;
+    private EndGameFragmentInterface host;
 
     // Your presenter is available using the mPresenter variable
 
@@ -83,7 +87,7 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            host = (EndGameFragmentListener) context;
+            host = (EndGameFragmentInterface) context;
         } catch (ClassCastException e) {
             Timber.e("Host activity must implement EndGameFragmentListener");
         }
@@ -109,5 +113,29 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
     @Override
     public void displayScore(int gameScore) {
         score.setText(String.valueOf(gameScore));
+    }
+
+    @Override
+    public void displayLeaderboardsButtonIfConnected() {
+        if (host.isGooglePlayApiConnected()) {
+            leaderboards.setVisibility(View.VISIBLE);
+        } else {
+            leaderboards.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onConnectionSuccessful() {
+        leaderboards.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onConnectionFailed() {
+        leaderboards.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.leaderboards)
+    public void onClick() {
+        host.showLeaderboards();
     }
 }

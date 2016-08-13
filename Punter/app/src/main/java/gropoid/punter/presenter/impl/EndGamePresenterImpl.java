@@ -29,6 +29,7 @@ public final class EndGamePresenterImpl extends BasePresenterImpl<EndGameView> i
         // Your code here. Your view is available using mView and will not be null until next onStop()
         assert mView != null;
         mView.displayScore(mInteractor.getGameScore());
+        mView.displayLeaderboardsButtonIfConnected();
     }
 
     @Override

@@ -3,13 +3,13 @@ package gropoid.punter.view.impl;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.facebook.stetho.BuildConfig;
 
@@ -24,7 +24,9 @@ import gropoid.punter.injection.DataAccessModule;
 import gropoid.punter.injection.MainViewModule;
 import gropoid.punter.presenter.MainPresenter;
 import gropoid.punter.presenter.loader.PresenterFactory;
+import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.MainView;
+import gropoid.punter.view.PlayGamesHelper;
 
 public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         implements MainView {
@@ -38,7 +40,6 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    // Your presenter is available using the mPresenter variable
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         super.onStart();
         assert mPresenter != null;
         mPresenter.loadCurrentState();
+        mPresenter.setGoogleApiContext(this);
     }
 
     @Override
@@ -82,10 +84,23 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         if (homeFragment == null) {
             homeFragment = HomeFragment.newInstance();
         }
+        unregisterPreviousGoogleApiListener();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_frame, homeFragment, HOME_FRAGMENT_TAG)
                 .commit();
+        mPresenter.registerGoogleApiListener(homeFragment);
     }
+
+    private void unregisterPreviousGoogleApiListener() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment oldFragment = fragmentManager.findFragmentById(R.id.main_frame);
+        if (oldFragment != null && oldFragment instanceof GoogleApiStateListener && mPresenter != null) {
+            mPresenter.unregisterGoogleApiListener((GoogleApiStateListener) oldFragment);
+        }
+    }
+
+
+
 
     @Override
     public void startQuizz() {
@@ -97,16 +112,29 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         if (quizzFragment == null) {
             quizzFragment = QuizzFragment.newInstance();
         }
+        unregisterPreviousGoogleApiListener();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_frame, quizzFragment, QUIZZ_FRAGMENT_TAG)
                 .commit();
     }
 
     @Override
-    public void showLeaderBoards() {
-        Toast.makeText(this, "LeaderBoards !!", Toast.LENGTH_LONG).show();
+    public void signIn() {
+        if (mPresenter != null) {
+            mPresenter.connectPlayGamesApi();
+        }
+    }
+
+    @Override
+    public void showLeaderboards() {
 
     }
+
+    @Override
+    public boolean isGooglePlayApiConnected() {
+        return (mPresenter != null && mPresenter.isGooglePlayClientConnected());
+    }
+
 
     @Override
     public void showEndGame() {
@@ -118,9 +146,11 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         if (endGameFragment == null) {
             endGameFragment = EndGameFragment.newInstance();
         }
+        unregisterPreviousGoogleApiListener();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_frame, endGameFragment, ENDGAME_FRAGMENT_TAG)
                 .commit();
+        mPresenter.registerGoogleApiListener(endGameFragment);
     }
 
     protected void bindLayout() {
@@ -150,5 +180,25 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PlayGamesHelper.RC_SIGNIN) {
+            if (resultCode == RESULT_OK && mPresenter != null) {
+                mPresenter.connectPlayGamesApi();
+            } else {
+                notifyGoogleApiFailure();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void notifyGoogleApiFailure() {
+        // in the presenter, the helper should already be in disconnected state
+        // need to notify the fragments, however
+        if (mPresenter != null) {
+            mPresenter.notifyGoogleApiFailure();
+        }
     }
 }

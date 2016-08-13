@@ -25,7 +25,7 @@ import gropoid.punter.injection.DataAccessModule;
 import gropoid.punter.injection.QuizzViewModule;
 import gropoid.punter.presenter.QuizzPresenter;
 import gropoid.punter.presenter.loader.PresenterFactory;
-import gropoid.punter.view.QuizzFragmentListener;
+import gropoid.punter.view.QuizzFragmentInterface;
 import gropoid.punter.view.QuizzView;
 import timber.log.Timber;
 
@@ -43,7 +43,7 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
     @BindView(R.id.game3)
     GameView game3;
 
-    QuizzFragmentListener host;
+    QuizzFragmentInterface host;
     @BindView(R.id.first_row)
     LinearLayout firstRow;
     @BindView(R.id.second_row)
@@ -81,7 +81,7 @@ public final class QuizzFragment extends BaseFragment<QuizzPresenter, QuizzView>
     @Override
     public void onAttach(Context context) {
         try {
-            host = (QuizzFragmentListener) context;
+            host = (QuizzFragmentInterface) context;
         } catch (ClassCastException e) {
             Timber.e("Host activity must implement QuizzFragmentListener");
         }

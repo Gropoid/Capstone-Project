@@ -9,4 +9,8 @@
     <string name="score_label">Game over!!\nYour score is :</string>
     <string name="debug_menu_item">Debug</string>
     <string name="loading_label">Loading …</string>
+    <string name="sign_in_why">Sign in to Play Games Services to participate in Leaderboards</string>
+    <string name="leaderboards">LeaderBoards</string>
+    <string name="app_id">481293289173</string>
+
 </resources>

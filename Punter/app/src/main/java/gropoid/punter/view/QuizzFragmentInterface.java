@@ -1,6 +1,6 @@
 package gropoid.punter.view;
 
-public interface QuizzFragmentListener {
+public interface QuizzFragmentInterface {
     void showEndGame();
     void showHome();
 }

@@ -10,12 +10,13 @@ import gropoid.punter.interactor.impl.MainInteractorImpl;
 import gropoid.punter.presenter.MainPresenter;
 import gropoid.punter.presenter.impl.MainPresenterImpl;
 import gropoid.punter.presenter.loader.PresenterFactory;
+import gropoid.punter.view.PlayGamesHelper;
 
 @Module
 public final class MainViewModule {
     @Provides
-    public MainInteractor provideInteractor(PunterState punterState) {
-        return new MainInteractorImpl(punterState);
+    public MainInteractor provideInteractor(PunterState punterState, PlayGamesHelper playGamesHelper) {
+        return new MainInteractorImpl(punterState, playGamesHelper);
     }
 
     @Provides

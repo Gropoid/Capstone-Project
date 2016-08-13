@@ -32,4 +32,10 @@
         android:layout_height="wrap_content"
         android:text="@string/new_game" />
 
+    <Button
+        android:id="@+id/leaderboards"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/leaderboards" />
+
 </LinearLayout>

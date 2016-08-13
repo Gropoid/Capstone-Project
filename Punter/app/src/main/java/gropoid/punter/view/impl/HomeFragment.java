@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+
+import com.google.android.gms.common.SignInButton;
 
 import javax.inject.Inject;
 
@@ -21,17 +24,22 @@ import gropoid.punter.injection.DataAccessModule;
 import gropoid.punter.injection.HomeViewModule;
 import gropoid.punter.presenter.HomePresenter;
 import gropoid.punter.presenter.loader.PresenterFactory;
-import gropoid.punter.view.HomeFragmentListener;
+import gropoid.punter.view.GoogleApiStateListener;
+import gropoid.punter.view.HomeFragmentInterface;
 import gropoid.punter.view.HomeView;
 import timber.log.Timber;
 
-public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> implements HomeView {
+public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> implements HomeView, GoogleApiStateListener {
     @Inject
     PresenterFactory<HomePresenter> mPresenterFactory;
     @BindView(R.id.new_game)
     Button newGame;
+    @BindView(R.id.sign_in_button)
+    SignInButton signInButton;
+    @BindView(R.id.sign_in_bar)
+    LinearLayout signInBar;
 
-    private HomeFragmentListener host;
+    private HomeFragmentInterface host;
 
     // Your presenter is available using the mPresenter variable
 
@@ -73,18 +81,46 @@ public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> im
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            host = (HomeFragmentListener)context;
+            host = (HomeFragmentInterface) context;
         } catch (ClassCastException e) {
             Timber.e("Host activity must implement HomeFragmentListener");
         }
     }
 
-    @OnClick(R.id.new_game)
-    public void onClick() {
-        host.startQuizz();
-    }
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
+    }
+
+
+    @OnClick({R.id.new_game, R.id.sign_in_button})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.new_game:
+                host.startQuizz();
+                break;
+            case R.id.sign_in_button:
+                host.signIn();
+                break;
+        }
+    }
+
+    @Override
+    public void onConnectionSuccessful() {
+        signInBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onConnectionFailed() {
+        signInButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showGooglePlayPanelIfNotConnected() {
+        if (host.isGooglePlayApiConnected()) {
+            onConnectionSuccessful();
+        } else {
+            onConnectionFailed();
+        }
     }
 }

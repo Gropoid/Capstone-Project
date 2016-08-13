@@ -15,9 +15,9 @@ import timber.log.Timber;
 public class QuestionManager {
     private static final int MAX_TYPES = 3;
     private static final int POSSIBLE_ANSWERS = 4;
-    public static final int MAX_LOOPS = 15;
+    private static final int MAX_LOOPS = 15;
     private static final int LOW_QUESTIONS_THRESHOLD = 60;
-    public static final int QUESTION_GENERATION_POOL_SIZE = 100;
+    public static final int DEFAULT_QUESTION_POOL_SIZE = 100;
     private List<Game> gamePool;
     private Hashtable<Long, Platform> platformPool;
 
@@ -201,7 +201,7 @@ public class QuestionManager {
         }
         repository.delete(question);
         if (isQuestionDbStarved()) {
-            generateQuestions(QUESTION_GENERATION_POOL_SIZE);
+            generateQuestions(DEFAULT_QUESTION_POOL_SIZE);
         }
     }
 

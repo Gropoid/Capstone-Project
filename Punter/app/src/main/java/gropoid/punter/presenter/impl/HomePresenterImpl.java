@@ -27,6 +27,8 @@ public final class HomePresenterImpl extends BasePresenterImpl<HomeView> impleme
         super.onStart(firstStart);
 
         // Your code here. Your view is available using mView and will not be null until next onStop()
+        assert mView != null;
+        mView.showGooglePlayPanelIfNotConnected();
         mInteractor.syncIfneeded();
     }
 

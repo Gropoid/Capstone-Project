@@ -7,7 +7,9 @@ import javax.inject.Inject;
 import gropoid.punter.data.PunterState;
 import gropoid.punter.interactor.MainInteractor;
 import gropoid.punter.presenter.MainPresenter;
+import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.MainView;
+import gropoid.punter.view.impl.MainActivity;
 import timber.log.Timber;
 
 public final class MainPresenterImpl extends BasePresenterImpl<MainView> implements MainPresenter {
@@ -80,5 +82,35 @@ public final class MainPresenterImpl extends BasePresenterImpl<MainView> impleme
     @Override
     public void setCurrentStateEndGame() {
         mInteractor.setCurrentStateEndGame();
+    }
+
+    @Override
+    public void connectPlayGamesApi() {
+        mInteractor.connectPlayGamesApi();
+    }
+
+    @Override
+    public void registerGoogleApiListener(GoogleApiStateListener listener) {
+        mInteractor.registerGoogleApiListener(listener);
+    }
+
+    @Override
+    public void unregisterGoogleApiListener(GoogleApiStateListener listener) {
+        mInteractor.unregisterGoogleApiListener(listener);
+    }
+
+    @Override
+    public void notifyGoogleApiFailure() {
+        mInteractor.notifyGoogleApiFailure();
+    }
+
+    @Override
+    public void setGoogleApiContext(MainActivity mainActivity) {
+        mInteractor.setGoogleApiContext(mainActivity);
+    }
+
+    @Override
+    public boolean isGooglePlayClientConnected() {
+        return mInteractor.isGooglePlayClientConnected();
     }
 }

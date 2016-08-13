@@ -6,4 +6,6 @@ import android.support.annotation.UiThread;
 public interface EndGameView {
 
     void displayScore(int gameScore);
+
+    void displayLeaderboardsButtonIfConnected();
 }

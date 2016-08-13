@@ -93,7 +93,7 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
             callback.onLoadingProgress(100);
         } else {
             if (!gameManager.isGameDbStarved()) {
-                questionManager.generateQuestions(QuestionManager.QUESTION_GENERATION_POOL_SIZE);
+                questionManager.generateQuestions(QuestionManager.DEFAULT_QUESTION_POOL_SIZE);
                 prepareQuizz(callback);
             } else {
                 gameDbStateReceiver = new GameDbStateReceiver(callback);
