@@ -21,5 +21,6 @@
     <string name="sign_out_nav_label">Sign out</string>
     <string name="debug_nav_label">Debug</string>
     <string name="sign_in_nav_label">Sign In</string>
+    <string name="player_profile_icon_content_description">Player profile icon</string>
 
 </resources>

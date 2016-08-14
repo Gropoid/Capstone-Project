@@ -28,7 +28,7 @@
             android:parentActivityName=".view.impl.MainActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".view.impl.MainActivity"
+            android:name="gropoid.punter.view.impl.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

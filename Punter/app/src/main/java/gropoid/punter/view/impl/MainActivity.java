@@ -13,10 +13,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.stetho.BuildConfig;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
 
 import javax.inject.Inject;
 
@@ -51,6 +56,9 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
+    View headerLayout;
+    TextView navigationHeaderText;
+    ImageView navigationHeaderImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,8 +188,11 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
         }
+        headerLayout = navigationView.getHeaderView(0);
+        navigationHeaderText = (TextView) headerLayout.findViewById(R.id.nav_header_name);
+        navigationHeaderImage = (ImageView) headerLayout.findViewById(R.id.nav_header_image);
     }
 
 
@@ -247,6 +258,19 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         navigationView.getMenu().findItem(R.id.nav_sign_in).setVisible(!isSignedIn);
         navigationView.getMenu().findItem(R.id.nav_sign_out).setVisible(isSignedIn);
         navigationView.getMenu().findItem(R.id.nav_leaderboards).setVisible(isSignedIn);
+        if (isSignedIn && getPlayGamesHelper() != null) {
+            Player player = Games.Players.getCurrentPlayer(getPlayGamesHelper().getGoogleApiClient());
+            Glide.with(this)
+                    .load(player.getIconImageUri())
+                    .placeholder(R.drawable.ic_placeholder)
+                    .into(navigationHeaderImage);
+            navigationHeaderText.setText(player.getDisplayName());
+        } else {
+            Glide.with(this)
+                    .load(R.drawable.ic_placeholder)
+                    .into(navigationHeaderImage);
+            navigationHeaderText.setText("");
+        }
     }
 
     private void toggleDebugNavigation() {

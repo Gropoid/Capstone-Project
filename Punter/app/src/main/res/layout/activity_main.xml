@@ -30,6 +30,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/deep_purple_200"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu"
+        app:headerLayout="@layout/nav_header"/>
 
 </android.support.v4.widget.DrawerLayout>
