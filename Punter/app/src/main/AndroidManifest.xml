@@ -29,9 +29,6 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".view.impl.SignInActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".view.impl.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
