@@ -87,11 +87,16 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
 
     @Override
     public void prepareQuizz(LoadingCallback callback) {
-        Timber.v("Preparing new quizz");
+        Timber.v("Preparing  quizz");
         quizz = questionManager.getQuestions(QUESTIONS_COUNT);
         if (quizz != null && quizz.size() == QUESTIONS_COUNT) {
-            currentQuestion = 0;
-            callback.onLoadingProgress(100);
+            if (currentQuestion == -1) {
+                currentQuestion = 0;
+                callback.onLoadingProgress(100);
+            } else {
+                // we are resuming an ongoing quizz, do nothing
+                callback.onLoadingProgress(100);
+            }
         } else {
             if (!gameManager.isGameDbStarved()) {
                 questionManager.generateQuestions(QuestionManager.DEFAULT_QUESTION_POOL_SIZE);

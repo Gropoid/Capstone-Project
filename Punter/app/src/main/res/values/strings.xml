@@ -11,7 +11,7 @@
     <string name="loading_label">Loading …</string>
     <string name="sign_in_why">Sign in to Play Games Services to participate in Leaderboards</string>
     <string name="leaderboards">LeaderBoards</string>
-    <string name="app_id">481293289173</string>
+    <string name="play_games_api_app_id">481293289173</string>
     <string name="leaderboard_high_score">CgkI1Y3D-oAOEAIQAA</string>
     <string name="appwidget_text">Punter</string>
     <string name="add_widget">Add Punter High Score Widget</string>

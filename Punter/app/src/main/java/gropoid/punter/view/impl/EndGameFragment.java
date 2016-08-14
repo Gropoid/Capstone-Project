@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -39,6 +42,8 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
     Button newGame;
     @BindView(R.id.leaderboards)
     Button leaderboards;
+    @BindView(R.id.adView)
+    AdView adView;
 
     private EndGameFragmentInterface host;
 
@@ -72,6 +77,12 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
             mPresenter.submitScore();
             mPresenter.checkGoogleApiConnected();
         }
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("0C4D1F486FBA3BE53F0B1B097B08D99F")
+                .build();
+        adView.loadAd(adRequest);
+
     }
 
     @Override
