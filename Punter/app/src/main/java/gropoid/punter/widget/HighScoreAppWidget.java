@@ -1,13 +1,16 @@
 package gropoid.punter.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 
 import gropoid.punter.R;
 import gropoid.punter.data.Repository;
 import gropoid.punter.domain.LocalHighScoreManager;
+import gropoid.punter.view.impl.MainActivity;
 
 public class HighScoreAppWidget extends AppWidgetProvider {
 
@@ -17,6 +20,9 @@ public class HighScoreAppWidget extends AppWidgetProvider {
         CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.high_score_app_widget);
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        views.setOnClickPendingIntent(R.id.widget, PendingIntent.getActivity(context, 0, intent, 0));
         views.setTextViewText(R.id.appwidget_text, widgetText);
         LocalHighScoreManager localHighScoreManager = new LocalHighScoreManager(context, new Repository(context.getContentResolver()));
         views.setTextViewText(R.id.appwidget_score, String.valueOf(localHighScoreManager.getHighScore()));
@@ -41,5 +47,6 @@ public class HighScoreAppWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
+
 }
 

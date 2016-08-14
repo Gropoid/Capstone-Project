@@ -87,6 +87,7 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
 
     @Override
     public void prepareQuizz(LoadingCallback callback) {
+        Timber.v("Preparing new quizz");
         quizz = questionManager.getQuestions(QUESTIONS_COUNT);
         if (quizz != null && quizz.size() == QUESTIONS_COUNT) {
             currentQuestion = 0;
