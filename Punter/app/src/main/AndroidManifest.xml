@@ -4,7 +4,7 @@
     package="gropoid.punter">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".Punter"
@@ -26,8 +26,7 @@
             android:name=".view.impl.DebugActivity"
             android:exported="true"
             android:parentActivityName=".view.impl.MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".view.impl.MainActivity"
             android:screenOrientation="portrait">
@@ -38,7 +37,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".retrofit.ConnectivityReceiver"
+        <receiver
+            android:name=".retrofit.ConnectivityReceiver"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -51,13 +51,23 @@
             android:exported="false" />
 
         <!-- Play Games Services Section -->
-        <meta-data android:name="com.google.android.gms.games.APP_ID"
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />
-        <meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <!-- End Play Games Services Section -->
 
+        <receiver android:name=".widget.HighScoreAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/high_score_app_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
