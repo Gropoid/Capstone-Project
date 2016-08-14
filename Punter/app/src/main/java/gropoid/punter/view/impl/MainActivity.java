@@ -3,8 +3,12 @@ package gropoid.punter.view.impl;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -29,8 +33,9 @@ import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.MainView;
 import gropoid.punter.view.PlayGamesHelper;
 
+
 public final class MainActivity extends BaseActivity<MainPresenter, MainView>
-        implements MainView {
+        implements MainView, GoogleApiStateListener {
     private static final String QUIZZ_FRAGMENT_TAG = "QuizzFragmentTag";
     private static final String ENDGAME_FRAGMENT_TAG = "EndGameFragmentTag";
     private static final String HOME_FRAGMENT_TAG = "HomeFragmentTag";
@@ -41,6 +46,10 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
     FrameLayout mainFrame;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.navigation_view)
+    NavigationView navigationView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
 
     @Override
@@ -49,7 +58,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         // Do not call mPresenter from here, it will be null! Wait for onStart or onPostCreate.
-        bindLayout();
+        setupView();
     }
 
     @Override
@@ -135,6 +144,16 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
     }
 
     @Override
+    public void showDebug() {
+        startActivity(new Intent(this, DebugActivity.class));
+    }
+
+    @Override
+    public void closeDrawers() {
+        drawerLayout.closeDrawers();
+    }
+
+    @Override
     public PlayGamesHelper getPlayGamesHelper() {
         return mPresenter != null ? mPresenter.getPlayGamesHelper() : null;
     }
@@ -156,7 +175,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         mPresenter.registerGoogleApiListener(endGameFragment);
     }
 
-    protected void bindLayout() {
+    protected void setupView() {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -165,24 +184,42 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         }
     }
 
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        if (mPresenter != null) {
+            mPresenter.registerGoogleApiListener(this);
+        }
+        navigationView.setNavigationItemSelectedListener(mPresenter);
+        toggleSignInNavigation(mPresenter.isGooglePlayClientConnected());
+        toggleDebugNavigation();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (BuildConfig.DEBUG) {
-            getMenuInflater().inflate(R.menu.menu_debug, menu);
-        }
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.debug:
-                startActivity(new Intent(this, DebugActivity.class));
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        setupDrawerContent(navigationView);
     }
 
     @Override
@@ -203,5 +240,26 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         if (mPresenter != null) {
             mPresenter.notifyGoogleApiFailure();
         }
+    }
+
+    @Override
+    public void toggleSignInNavigation(boolean isSignedIn) {
+        navigationView.getMenu().findItem(R.id.nav_sign_in).setVisible(!isSignedIn);
+        navigationView.getMenu().findItem(R.id.nav_sign_out).setVisible(isSignedIn);
+        navigationView.getMenu().findItem(R.id.nav_leaderboards).setVisible(isSignedIn);
+    }
+
+    private void toggleDebugNavigation() {
+        navigationView.getMenu().findItem(R.id.nav_debug).setVisible(BuildConfig.DEBUG);
+    }
+
+    @Override
+    public void onConnected() {
+        toggleSignInNavigation(true);
+    }
+
+    @Override
+    public void onDisconnected() {
+        toggleSignInNavigation(false);
     }
 }

@@ -1,11 +1,13 @@
 package gropoid.punter.presenter;
 
+import android.support.design.widget.NavigationView;
+
 import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.MainView;
 import gropoid.punter.view.PlayGamesHelper;
 import gropoid.punter.view.impl.MainActivity;
 
-public interface MainPresenter extends BasePresenter<MainView> {
+public interface MainPresenter extends BasePresenter<MainView>, NavigationView.OnNavigationItemSelectedListener {
 
     void loadCurrentState();
 

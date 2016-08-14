@@ -1,9 +1,11 @@
 package gropoid.punter.presenter.impl;
 
 import android.support.annotation.NonNull;
+import android.view.MenuItem;
 
 import javax.inject.Inject;
 
+import gropoid.punter.R;
 import gropoid.punter.data.PunterState;
 import gropoid.punter.interactor.MainInteractor;
 import gropoid.punter.presenter.MainPresenter;
@@ -118,5 +120,35 @@ public final class MainPresenterImpl extends BasePresenterImpl<MainView> impleme
     @Override
     public PlayGamesHelper getPlayGamesHelper() {
         return mInteractor.getPlayGamesHelper();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        if (mView != null) {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    mView.showHome();
+                    break;
+                case R.id.nav_quizz:
+                    mView.startQuizz();
+                    break;
+                case R.id.nav_sign_in:
+                    mInteractor.getPlayGamesHelper().signIn();
+                    break;
+                case R.id.nav_sign_out:
+                    mInteractor.getPlayGamesHelper().signOut();
+                    break;
+                case R.id.nav_leaderboards:
+                    mView.showLeaderboards();
+                    break;
+                case R.id.nav_debug:
+                    mView.showDebug();
+                    break;
+                default:
+                    break;
+            }
+            mView.closeDrawers();
+        }
+        return true;
     }
 }

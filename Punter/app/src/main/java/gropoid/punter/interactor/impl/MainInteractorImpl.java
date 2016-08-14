@@ -72,7 +72,7 @@ public final class MainInteractorImpl implements MainInteractor, GoogleApiStateL
 
     @Override
     public void notifyGoogleApiFailure() {
-        playGamesHelper.notifyFailure();
+        playGamesHelper.notifyDisconnected();
     }
 
     @Override
@@ -91,7 +91,7 @@ public final class MainInteractorImpl implements MainInteractor, GoogleApiStateL
     }
 
     @Override
-    public void onConnectionSuccessful() {
+    public void onConnected() {
         // submit score that were achieved before singing in, if one is pending
         int bufferedScore = punterState.getHighScoreLocalBuffer();
         if (bufferedScore != -1) {
@@ -101,7 +101,7 @@ public final class MainInteractorImpl implements MainInteractor, GoogleApiStateL
     }
 
     @Override
-    public void onConnectionFailed() {
+    public void onDisconnected() {
         // nothing
     }
 }

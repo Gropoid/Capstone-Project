@@ -26,7 +26,6 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
     @Inject
     GoogleApiClient googleApiClient;
 
-    private boolean isConnected;
     private Activity activity;
     Set<GoogleApiStateListener> listeners;
 
@@ -51,8 +50,8 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
 
     @Override
     public boolean isSignedIn() {
-        Timber.v("isSignedIn() = %s", isConnected);
-        return isConnected;
+        Timber.v("isSignedIn() = %s", googleApiClient.isConnected());
+        return googleApiClient.isConnected();
     }
 
     @Override
@@ -74,7 +73,6 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Timber.v("onConnected()");
-        isConnected = true;
         Games.setViewForPopups(googleApiClient, activity.getWindow().getDecorView());
         notifyConnection();
     }
@@ -82,14 +80,12 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
     @Override
     public void onConnectionSuspended(int i) {
         Timber.v("onConnectionSuspended()");
-        isConnected = false;
         googleApiClient.connect();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Timber.v("onConnectionFailed()");
-        isConnected = false;
+        Timber.v("onDisconnected()");
         if (activity != null) {
             if (connectionResult.hasResolution()) {
                 try {
@@ -100,22 +96,29 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
                     googleApiClient.connect();
                 }
             } else {
-                notifyFailure();
+                notifyDisconnected();
             }
         }
     }
 
     @Override
     //Visible because we may need to notify from the Activity after a result from the startResolutionForResult() call
-    public void notifyFailure() {
+    public void notifyDisconnected() {
         for (GoogleApiStateListener listener : listeners) {
-            listener.onConnectionFailed();
+            listener.onDisconnected();
         }
+    }
+
+    @Override
+    public void signOut() {
+        Timber.v("signOut()");
+        googleApiClient.disconnect();
+        notifyDisconnected();
     }
 
     private void notifyConnection() {
         for (GoogleApiStateListener listener : listeners) {
-            listener.onConnectionSuccessful();
+            listener.onConnected();
         }
     }
 

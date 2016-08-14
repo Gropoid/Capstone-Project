@@ -41,9 +41,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.gropoid
+            debuggable false
         }
         debug {
             signingConfig signingConfigs.gropoid
+            debuggable true
         }
     }
 
@@ -59,7 +61,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:cardview-v7:24.1.1'
     compile 'com.android.support:recyclerview-v7:24.1.1'
-
+    compile 'com.android.support:design:24.1.1'
 
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.google.code.gson:gson:2.6.2'

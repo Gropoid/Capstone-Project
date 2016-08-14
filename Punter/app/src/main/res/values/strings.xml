@@ -15,5 +15,11 @@
     <string name="leaderboard_high_score">CgkI1Y3D-oAOEAIQAA</string>
     <string name="appwidget_text">Punter</string>
     <string name="add_widget">Add Punter High Score Widget</string>
+    <string name="home_nav_label">Home</string>
+    <string name="play_quizz_nav_label">Play quizz</string>
+    <string name="leaderboards_nav_label">Leaderboards</string>
+    <string name="sign_out_nav_label">Sign out</string>
+    <string name="debug_nav_label">Debug</string>
+    <string name="sign_in_nav_label">Sign In</string>
 
 </resources>

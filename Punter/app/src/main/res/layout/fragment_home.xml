@@ -14,7 +14,7 @@
         android:layout_marginTop="16dp"
         android:layout_centerInParent="true"
         android:padding="16dp"
-        android:text="@string/new_game" />
+        android:text="@string/play_quizz_nav_label" />
 
     <Button
         android:id="@+id/leaderboards"

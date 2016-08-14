@@ -14,5 +14,7 @@ public interface PlayGamesHelper {
     GoogleApiClient getGoogleApiClient();
     void registerListener(GoogleApiStateListener listener);
     void unregisterListener(GoogleApiStateListener listener);
-    void notifyFailure();
+    void notifyDisconnected();
+
+    void signOut();
 }

@@ -6,6 +6,7 @@ import android.support.annotation.UiThread;
 public interface MainView
         extends QuizzFragmentInterface,
         HomeFragmentInterface,
-        EndGameFragmentInterface {
+        EndGameFragmentInterface,
+        NavigationInterface {
 
 }

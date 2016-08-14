@@ -95,6 +95,13 @@ public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> im
         assert mPresenter != null;
         if (host != null) {
             mPresenter.setPlayGamesHelper(host.getPlayGamesHelper());
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mPresenter != null) {
             mPresenter.checkGoogleApiConnected();
         }
     }
@@ -117,13 +124,13 @@ public final class HomeFragment extends BaseFragment<HomePresenter, HomeView> im
     }
 
     @Override
-    public void onConnectionSuccessful() {
+    public void onConnected() {
         signInBar.setVisibility(View.GONE);
         leaderboards.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onConnectionFailed() {
+    public void onDisconnected() {
         signInBar.setVisibility(View.VISIBLE);
         leaderboards.setVisibility(View.GONE);
     }

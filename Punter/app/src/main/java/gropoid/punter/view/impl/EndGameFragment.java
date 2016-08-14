@@ -75,7 +75,6 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
         if (host != null) {
             mPresenter.setPlayGamesHelper(host.getPlayGamesHelper());
             mPresenter.submitScore();
-            mPresenter.checkGoogleApiConnected();
         }
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
@@ -83,6 +82,14 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
                 .build();
         adView.loadAd(adRequest);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mPresenter != null) {
+            mPresenter.checkGoogleApiConnected();
+        }
     }
 
     @Override
@@ -138,12 +145,12 @@ public final class EndGameFragment extends BaseFragment<EndGamePresenter, EndGam
     }
 
     @Override
-    public void onConnectionSuccessful() {
+    public void onConnected() {
         leaderboards.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onConnectionFailed() {
+    public void onDisconnected() {
         leaderboards.setVisibility(View.GONE);
     }
 

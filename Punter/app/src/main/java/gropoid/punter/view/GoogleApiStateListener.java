@@ -2,6 +2,6 @@ package gropoid.punter.view;
 
 
 public interface GoogleApiStateListener {
-    void onConnectionSuccessful();
-    void onConnectionFailed();
+    void onConnected();
+    void onDisconnected();
 }
