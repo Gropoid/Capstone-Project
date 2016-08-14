@@ -37,7 +37,7 @@ public final class HomeInteractorImpl implements HomeInteractor {
 
     @Override
     public boolean isGooglePlayApiConnected() {
-        return playGamesHelper.isSignedIn();
+        return playGamesHelper.isConnected();
     }
 
 

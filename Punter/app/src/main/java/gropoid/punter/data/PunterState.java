@@ -15,6 +15,7 @@ public class PunterState {
     private static final String CURRENT_API_GAME_PAGE = "CurrentApiGamePage";
     private static final String SCORE = "Score";
     private static final String HIGH_SCORE_BUFFER = "HighScoreBuffer";
+    private static final String SIGNED_IN = "SignedIn";
 
     @Inject
     SharedPreferences sharedPreferences;
@@ -63,4 +64,13 @@ public class PunterState {
     public int getHighScoreLocalBuffer() {
         return sharedPreferences.getInt(HIGH_SCORE_BUFFER, -1);
     }
+
+    public boolean isUserSignedIn() {
+        return sharedPreferences.getBoolean(SIGNED_IN, false);
+    }
+
+    public void setIsUserSignedIn(boolean signedIn) {
+        sharedPreferences.edit().putBoolean(SIGNED_IN, signedIn).apply();
+    }
+
 }

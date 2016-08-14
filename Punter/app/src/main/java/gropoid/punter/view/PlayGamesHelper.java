@@ -10,11 +10,11 @@ public interface PlayGamesHelper {
 
     void setActivity(Activity activity);
     void signIn();
-    boolean isSignedIn();
+    boolean isConnected();
     GoogleApiClient getGoogleApiClient();
     void registerListener(GoogleApiStateListener listener);
     void unregisterListener(GoogleApiStateListener listener);
-    void notifyDisconnected();
+    void onDisconnected();
 
     void signOut();
 }

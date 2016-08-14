@@ -72,7 +72,7 @@ public final class MainInteractorImpl implements MainInteractor, GoogleApiStateL
 
     @Override
     public void notifyGoogleApiFailure() {
-        playGamesHelper.notifyDisconnected();
+        playGamesHelper.onDisconnected();
     }
 
     @Override
@@ -82,7 +82,7 @@ public final class MainInteractorImpl implements MainInteractor, GoogleApiStateL
 
     @Override
     public boolean isGooglePlayClientConnected() {
-        return playGamesHelper.isSignedIn();
+        return playGamesHelper.isConnected();
     }
 
     @Override

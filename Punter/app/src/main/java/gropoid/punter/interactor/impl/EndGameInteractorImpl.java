@@ -40,7 +40,7 @@ public final class EndGameInteractorImpl implements EndGameInteractor {
     public void submitScore() {
         int score = punterState.getScore();
         if (localHighScoreManager.submitScore(score)) {
-            if (playGamesHelper.isSignedIn()) {
+            if (playGamesHelper.isConnected()) {
                 Games.Leaderboards.submitScore(playGamesHelper.getGoogleApiClient(), context.getString(R.string.leaderboard_high_score), punterState.getScore());
             } else {
                 punterState.setHighScoreLocalBuffer(punterState.getScore());
@@ -55,7 +55,7 @@ public final class EndGameInteractorImpl implements EndGameInteractor {
 
     @Override
     public boolean isPlayApiConnected() {
-        return playGamesHelper.isSignedIn();
+        return playGamesHelper.isConnected();
     }
 
 }

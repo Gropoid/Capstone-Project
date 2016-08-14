@@ -2,6 +2,8 @@ package gropoid.punter.view.impl;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,11 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.facebook.stetho.BuildConfig;
+import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
 
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import gropoid.punter.R;
 import gropoid.punter.injection.AppComponent;
 import gropoid.punter.injection.DaggerMainViewComponent;
@@ -59,7 +61,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
 
     View headerLayout;
     TextView navigationHeaderText;
-    ImageView navigationHeaderImage;
+    CircleImageView navigationHeaderImage;
 
     ActionBarDrawerToggle actionBarDrawerToggle;
 
@@ -192,7 +194,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         ActionBar actionBar = getSupportActionBar();
         headerLayout = navigationView.getHeaderView(0);
         navigationHeaderText = (TextView) headerLayout.findViewById(R.id.nav_header_name);
-        navigationHeaderImage = (ImageView) headerLayout.findViewById(R.id.nav_header_image);
+        navigationHeaderImage = (CircleImageView) headerLayout.findViewById(R.id.nav_header_image);
         actionBarDrawerToggle = setupDrawerToggle();
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
     }
@@ -219,7 +221,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
     @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(actionBarDrawerToggle.onOptionsItemSelected(item)){
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -270,15 +272,18 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         navigationView.getMenu().findItem(R.id.nav_leaderboards).setVisible(isSignedIn);
         if (isSignedIn && getPlayGamesHelper() != null) {
             Player player = Games.Players.getCurrentPlayer(getPlayGamesHelper().getGoogleApiClient());
-            Glide.with(this)
-                    .load(player.getIconImageUri())
-                    .placeholder(R.drawable.ic_placeholder)
-                    .into(navigationHeaderImage);
+            ImageManager imageManager = ImageManager.create(this);
+            // the hoops we have to jump through to load an image into an imageview  -___-
+            imageManager.loadImage(new ImageManager.OnImageLoadedListener() {
+                @Override
+                public void onImageLoaded(Uri uri, Drawable drawable, boolean b) {
+                    navigationHeaderImage.setImageDrawable(drawable);
+                }
+            }, player.getIconImageUri(), R.drawable.ic_placeholder);
             navigationHeaderText.setText(player.getDisplayName());
         } else {
-            Glide.with(this)
-                    .load(R.drawable.ic_placeholder)
-                    .into(navigationHeaderImage);
+            ImageManager imageManager = ImageManager.create(this);
+            imageManager.loadImage(navigationHeaderImage, R.drawable.ic_placeholder);
             navigationHeaderText.setText("");
         }
     }

@@ -16,6 +16,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import gropoid.punter.data.PunterState;
 import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.PlayGamesHelper;
 import timber.log.Timber;
@@ -25,16 +26,26 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
         GoogleApiClient.ConnectionCallbacks {
     @Inject
     GoogleApiClient googleApiClient;
+    @Inject
+    PunterState punterState;
 
     private Activity activity;
     Set<GoogleApiStateListener> listeners;
 
     @Inject
-    public PlayGamesHelperImpl(GoogleApiClient googleApiClient) {
+    public PlayGamesHelperImpl(GoogleApiClient googleApiClient, PunterState punterState) {
         this.googleApiClient = googleApiClient;
+        this.punterState = punterState;
         googleApiClient.registerConnectionCallbacks(this);
         googleApiClient.registerConnectionFailedListener(this);
         listeners = new HashSet<>();
+        init();
+    }
+
+    private void init() {
+        if (punterState.isUserSignedIn()) {
+            googleApiClient.connect();
+        }
     }
 
     @Override
@@ -45,12 +56,13 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
     @Override
     public void signIn() {
         Timber.v("signIn()");
+        punterState.setIsUserSignedIn(true);
         googleApiClient.connect();
     }
 
     @Override
-    public boolean isSignedIn() {
-        Timber.v("isSignedIn() = %s", googleApiClient.isConnected());
+    public boolean isConnected() {
+        Timber.v("isConnected() = %s | isConnected = %s (%s)", punterState.isUserSignedIn(), googleApiClient.isConnected(), googleApiClient);
         return googleApiClient.isConnected();
     }
 
@@ -73,6 +85,7 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Timber.v("onConnected()");
+        punterState.setIsUserSignedIn(true);
         Games.setViewForPopups(googleApiClient, activity.getWindow().getDecorView());
         notifyConnection();
     }
@@ -96,14 +109,15 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
                     googleApiClient.connect();
                 }
             } else {
-                notifyDisconnected();
+                onDisconnected();
             }
         }
     }
 
     @Override
     //Visible because we may need to notify from the Activity after a result from the startResolutionForResult() call
-    public void notifyDisconnected() {
+    public void onDisconnected() {
+        punterState.setIsUserSignedIn(false);
         for (GoogleApiStateListener listener : listeners) {
             listener.onDisconnected();
         }
@@ -112,8 +126,9 @@ public class PlayGamesHelperImpl implements PlayGamesHelper,
     @Override
     public void signOut() {
         Timber.v("signOut()");
+        Games.signOut(googleApiClient);
         googleApiClient.disconnect();
-        notifyDisconnected();
+        onDisconnected();
     }
 
     private void notifyConnection() {

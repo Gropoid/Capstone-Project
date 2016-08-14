@@ -7,6 +7,7 @@ import com.google.android.gms.games.Games;
 
 import dagger.Module;
 import dagger.Provides;
+import gropoid.punter.data.PunterState;
 import gropoid.punter.domain.PlayGamesHelperImpl;
 import gropoid.punter.view.PlayGamesHelper;
 
@@ -20,7 +21,7 @@ public class PlayGamesApiModule {
     }
 
     @Provides
-    PlayGamesHelper providePlayGamesHelper(GoogleApiClient googleApiClient) {
-        return new PlayGamesHelperImpl(googleApiClient);
+    PlayGamesHelper providePlayGamesHelper(GoogleApiClient googleApiClient, PunterState punterState) {
+        return new PlayGamesHelperImpl(googleApiClient, punterState);
     }
 }

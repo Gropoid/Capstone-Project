@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/deep_purple_500</item>
         <item name="colorPrimaryDark">@color/deep_purple_800</item>
         <item name="colorAccent">@color/yellow_A400</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="AppToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
