@@ -129,12 +129,12 @@ public class GameFetchIntentService extends IntentService {
         if (gameDto.getImage().getMediumUrl().startsWith("https://")) {
             gameDto.getImage().setMediumUrl(gameDto.getImage().getMediumUrl().replace("https://", "http://"));
         }
-        Call<ResponseBody> call = giantBombApi.getImage(gameDto.getImage().getMediumUrl());
+        Call<ResponseBody> call = giantBombApi.getImage(gameDto.getImage().getSmallUrl());
         try {
             Response<ResponseBody> response = call.execute();
             if (response.isSuccessful()) {
                 Timber.v("Successfully retrieved image for game %s", gameDto.getName());
-                gameManager.save(gameDto.toGame(), gameDto.getImage().getMediumUrl(), response.body().bytes());
+                gameManager.save(gameDto.toGame(), gameDto.getImage().getSmallUrl(), response.body().bytes());
                 broadcast(FETCHING_PROGRESS);
             }
         } catch (IOException e) {

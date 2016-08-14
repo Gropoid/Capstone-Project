@@ -26,7 +26,7 @@
             android:name=".view.impl.DebugActivity"
             android:exported="true"
             android:parentActivityName=".view.impl.MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.impl.MainActivity"
             android:screenOrientation="portrait">
@@ -62,6 +62,7 @@
         <receiver android:name=".widget.HighScoreAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="gropoid.punter.LocalHighScoreManager.ACTION_NEW_HIGH_SCORE" />
             </intent-filter>
 
             <meta-data

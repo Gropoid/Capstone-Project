@@ -135,6 +135,9 @@ public class Repository {
                     GamePlatformEntry.CONTENT_URI,
                     contentValues
             );
+            if (c != null) {
+                c.close();
+            }
             return 1;
         }
     }

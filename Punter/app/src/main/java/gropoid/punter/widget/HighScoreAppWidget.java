@@ -6,6 +6,8 @@ import android.content.Context;
 import android.widget.RemoteViews;
 
 import gropoid.punter.R;
+import gropoid.punter.data.Repository;
+import gropoid.punter.domain.LocalHighScoreManager;
 
 public class HighScoreAppWidget extends AppWidgetProvider {
 
@@ -16,7 +18,8 @@ public class HighScoreAppWidget extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.high_score_app_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
-
+        LocalHighScoreManager localHighScoreManager = new LocalHighScoreManager(context, new Repository(context.getContentResolver()));
+        views.setTextViewText(R.id.appwidget_score, String.valueOf(localHighScoreManager.getHighScore()));
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
