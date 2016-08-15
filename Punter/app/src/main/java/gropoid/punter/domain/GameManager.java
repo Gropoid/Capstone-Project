@@ -16,14 +16,13 @@ import javax.inject.Inject;
 import gropoid.punter.data.PunterState;
 import gropoid.punter.data.Repository;
 import gropoid.punter.retrofit.GameFetchIntentService;
-import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 public class GameManager {
     public static final String IMAGE_FOLDER = "images/";
     public static final String IMAGE_FILE = "image";
     private static final int MAX_GAME_USES = 10;
-    private static final int LOW_GAMES_THRESHOLD = 30;
+    private static final int LOW_GAMES_THRESHOLD = 20;
 
     @Inject
     Context context;
@@ -81,7 +80,6 @@ public class GameManager {
         return getImageFolderPath() + id + extension;
     }
 
-    @DebugLog
     public List<Game> getAllGames() {
         List<Game> games = repository.findAllGames();
         Hashtable<Long, Platform> platformPool = new Hashtable<>();
@@ -107,18 +105,38 @@ public class GameManager {
         return repository.findPlatformIdsForGameId(game.getId());
     }
 
-    public void useGame(Game game) {
-        int uses = repository.findGameUsesByGameId(game.getId());
-        if (uses >= MAX_GAME_USES) {
+    public void addPlannedUseToGame(Game game) {
+        Timber.v("addPlannedUseToGame %s", game.getId());
+        game.setPlannedUses(game.getPlannedUses() + 1);
+        repository.save(game);
+    }
+
+    /**
+     * Use this method after a game has been actually used is a quizz to delete it from database if required.
+     *
+     * @param game the game that was just used in a question.
+     */
+    public void checkGameUsage(Game game) {
+        game.setActualUses(game.getActualUses() + 1);
+        Timber.d("Deleting game ? id %s pending uses [%s], actual uses [%s], nb_platforms %s", game.getId(), game.getPlannedUses(), game.getActualUses(), game.getPlatforms().size());
+        if (game.getActualUses() >= MAX_GAME_USES) {
+            Timber.d("Booya, deleting %s", game.getId());
             repository.delete(game);
             fetchMoreGamesIfNeeded();
         } else {
-            repository.updateGameUsesById(game.getId(), uses + 1);
+            repository.save(game);
         }
     }
 
-    public boolean wasGameUsedEnough(Game game) {
-        return repository.findGameUsesByGameId(game.getId()) >= MAX_GAME_USES;
+    /**
+     * Use this method to check if you can use this game in a new question, or if it has been
+     * scheduled in too many questions already.
+     *
+     * @param game the game whose planned usage you want to check
+     * @return true if the game has been used more than MAX_GAME_USE times in a question.
+     */
+    public boolean wasGamePlannedEnough(Game game) {
+        return game.getPlannedUses() >= MAX_GAME_USES;
     }
 
     private void fetchMoreGamesIfNeeded() {

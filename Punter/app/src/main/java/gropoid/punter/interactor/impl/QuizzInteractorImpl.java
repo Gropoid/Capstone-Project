@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 
 import java.util.List;
 
@@ -65,17 +66,24 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
 
     @Override
     public boolean submitAnswer(int answer) {
-        Question question = quizz.get(currentQuestion);
+        final Question question = quizz.get(currentQuestion);
         boolean answerIsCorrect = question.getCorrectAnswer().getId() == question.getGames()[answer].getId();
         if (answerIsCorrect) {
             score += 10;
         }
+        AsyncTask<Void, Void, Void> bgTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                questionManager.expireQuestion(question);
+                return null;
+            }
+        };
+        bgTask.execute();
         return answerIsCorrect;
     }
 
     @Override
     public boolean nextQuestion() {
-        questionManager.expireQuestion(quizz.get(currentQuestion));
         currentQuestion++;
         return currentQuestion < QUESTIONS_COUNT;
     }
@@ -99,7 +107,7 @@ public final class QuizzInteractorImpl implements QuizzInteractor {
             }
         } else {
             if (!gameManager.isGameDbStarved()) {
-                questionManager.generateQuestions(QuestionManager.DEFAULT_QUESTION_POOL_SIZE);
+                questionManager.generateQuestions(QuestionManager.LOW_QUESTIONS_THRESHOLD);
                 prepareQuizz(callback);
             } else {
                 gameDbStateReceiver = new GameDbStateReceiver(callback);

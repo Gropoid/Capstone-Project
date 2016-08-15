@@ -9,15 +9,15 @@ import javax.inject.Inject;
 
 import gropoid.punter.data.Repository;
 import gropoid.punter.domain.Question.Type;
-import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 public class QuestionManager {
     private static final int MAX_TYPES = 3;
     private static final int POSSIBLE_ANSWERS = 4;
     private static final int MAX_LOOPS = 15;
-    private static final int LOW_QUESTIONS_THRESHOLD = 60;
-    public static final int DEFAULT_QUESTION_POOL_SIZE = 100;
+    public static final int LOW_QUESTIONS_THRESHOLD = 10;
+    public static final int DEFAULT_QUESTION_POOL_SIZE = 29;
+    private static final int HIGH_QUESTION_POOL_SIZE = 60;
     private List<Game> gamePool;
     private Hashtable<Long, Platform> platformPool;
 
@@ -49,11 +49,9 @@ public class QuestionManager {
         return (int) Math.floor(Math.random() * value);
     }
 
-    @DebugLog
-    public void generateQuestions(int questionPoolSize) {
+    public synchronized void generateQuestions(int questionPoolSize) {
         Timber.i("Generating %s questions...", questionPoolSize);
-        gamePool = gameManager.getAllGames();
-        buildPlatformPool();
+        buildPools();
         if (gamePool.size() < 20) {
             Timber.w("Not enough games in db to generate questions");
             return;
@@ -65,10 +63,22 @@ public class QuestionManager {
         while (repository.getQuestionsCount() < questionPoolSize) {
             Question question = generateQuestion();
             if (question != null) {
-                repository.save(generateQuestion());
+                repository.save(question);
+                for (Game game : question.getGames()) {
+                    gameManager.addPlannedUseToGame(game);
+                }
             }
             Timber.v("Questions count in db : %s ", repository.getQuestionsCount());
         }
+    }
+
+    private void buildPools() {
+        buildGamePool();
+        buildPlatformPool();
+    }
+
+    private void buildGamePool() {
+        gamePool = gameManager.getAllGames();
     }
 
     private void buildPlatformPool() {
@@ -78,28 +88,31 @@ public class QuestionManager {
         }
     }
 
+
     private Question generateQuestion() {
         Question question = new Question();
         question.setType(randType());
         Game correctAnswer = gamePool.get(randGame());
+        if (gameManager.wasGamePlannedEnough(correctAnswer))
+            return null;
         question.setCorrectAnswer(correctAnswer);
         question.setCorrectAnswerCriterion(makeUpCriterionForQuestion(question));
         question.setWording(buildQuestionWording(question));
         question.getGames()[randOptions()] = correctAnswer;
         for (int i = 0; i < POSSIBLE_ANSWERS; i++) {
-            Game game;
-            int time_out = 0;
-            do {
-                game = gamePool.get(randGame());
-                if (++time_out > MAX_LOOPS) {
-                    Timber.w("Could not find wrong answers for this question, dropping (type=%s) (criterion=%s)",
-                            question.getType(), question.getCorrectAnswerCriterion());
-                    return null;
-                }
-            } while (isGameCorrectAnswerFor(game, question)
-                    || isGameAlreadyInQuestion(game, question)
-                    || gameManager.wasGameUsedEnough(game));
             if (question.getGames()[i] == null) {
+                Game game;
+                int time_out = 0;
+                do {
+                    game = gamePool.get(randGame());
+                    if (++time_out > MAX_LOOPS) {
+                        Timber.w("Could not find wrong answers for this question, dropping (games count=%s) (platform count=%s)",
+                                gamePool.size(), platformPool.size());
+                        return null;
+                    }
+                } while (isGameCorrectAnswerFor(game, question)
+                        || isGameAlreadyInQuestion(game, question)
+                        || gameManager.wasGamePlannedEnough(game));
                 question.getGames()[i] = game;
             }
         }
@@ -107,8 +120,8 @@ public class QuestionManager {
     }
 
     private boolean isGameAlreadyInQuestion(Game game, Question question) {
-        for (Game _game: question.getGames()) {
-            if ((_game != null) && game.getId() ==_game.getId())
+        for (Game _game : question.getGames()) {
+            if ((_game != null) && game.getId() == _game.getId())
                 return true;
         }
         return false;
@@ -166,7 +179,7 @@ public class QuestionManager {
         return platform.getId();
     }
 
-    public boolean isGameCorrectAnswerFor(Game game, Question question) {
+    private boolean isGameCorrectAnswerFor(Game game, Question question) {
         switch (question.getType()) {
             case Type.RELEASE_DATE:
                 Calendar c = Calendar.getInstance();
@@ -197,15 +210,15 @@ public class QuestionManager {
 
     public void expireQuestion(Question question) {
         for (Game game : question.getGames()) {
-            gameManager.useGame(game);
+            gameManager.checkGameUsage(game);
         }
         repository.delete(question);
-        if (isQuestionDbStarved()) {
-            generateQuestions(DEFAULT_QUESTION_POOL_SIZE);
+        if (isQuestionDbGettingLow()) {
+            generateQuestions(HIGH_QUESTION_POOL_SIZE);
         }
     }
 
-    public boolean isQuestionDbStarved() {
-        return repository.getQuestionsCount() < LOW_QUESTIONS_THRESHOLD;
+    private boolean isQuestionDbGettingLow() {
+        return repository.getQuestionsCount() < DEFAULT_QUESTION_POOL_SIZE;
     }
 }

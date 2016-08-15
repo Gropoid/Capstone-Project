@@ -196,7 +196,7 @@ public class PunterProvider extends ContentProvider {
                         selection, selectionArgs);
                 break;
             case GAME_PLATFORMS:
-                rowsDeleted = db.delete(PlatformEntry.TABLE_NAME,
+                rowsDeleted = db.delete(GamePlatformEntry.TABLE_NAME,
                         selection, selectionArgs);
                 break;
             case QUESTIONS:

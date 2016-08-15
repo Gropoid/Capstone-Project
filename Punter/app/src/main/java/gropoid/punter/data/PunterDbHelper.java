@@ -52,7 +52,8 @@ public class PunterDbHelper extends SQLiteOpenHelper {
                 GameEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 GameEntry.COLUMN_ORIGINAL_RELEASE_DATE + " INTEGER, " +
                 GameEntry.COLUMN_API_DETAIL_URL + " TEXT, " +
-                GameEntry.COLUMN_USES + " INTEGER" +
+                GameEntry.COLUMN_ACTUAL_USES + " INTEGER, " +
+                GameEntry.COLUMN_PLANNED_USES + " INTEGER" +
                 ");";
     }
 

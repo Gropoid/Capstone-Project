@@ -12,7 +12,8 @@ public class Game {
     String name;
     Date originalReleaseDate;
     List<Platform> platforms;
-    int uses = 0;
+    int actualUses = 0;
+    int plannedUses = 0;
 
     public long getId() {
         return id;
@@ -62,12 +63,20 @@ public class Game {
         this.originalReleaseDate = originalReleaseDate;
     }
 
-    public int getUses() {
-        return uses;
+    public int getActualUses() {
+        return actualUses;
     }
 
-    public void setUses(int uses) {
-        this.uses = uses;
+    public void setActualUses(int uses) {
+        this.actualUses = uses;
+    }
+
+    public int getPlannedUses() {
+        return plannedUses;
+    }
+
+    public void setPlannedUses(int plannedUses) {
+        this.plannedUses = plannedUses;
     }
 
     public List<Platform> getPlatforms() {

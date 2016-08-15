@@ -8,11 +8,10 @@
         android:title="@string/play_quizz_nav_label" />
     <item
         android:id="@+id/nav_leaderboards"
-        android:title="@string/leaderboards_nav_label"
- />
+        android:title="@string/leaderboards_nav_label" />
     <item
         android:id="@+id/nav_sign_in"
-        android:title="@string/sign_in_nav_label"/>
+        android:title="@string/sign_in_nav_label" />
     <item
         android:id="@+id/nav_sign_out"
         android:title="@string/sign_out_nav_label" />

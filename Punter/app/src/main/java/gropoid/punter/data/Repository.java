@@ -45,7 +45,8 @@ public class Repository {
         contentValues.put(GameEntry.COLUMN_GIANT_BOMB_ID, game.getId());
         contentValues.put(GameEntry.COLUMN_IMAGE, game.getImageFile());
         contentValues.put(GameEntry.COLUMN_NAME, game.getName());
-        contentValues.put(GameEntry.COLUMN_USES, game.getUses());
+        contentValues.put(GameEntry.COLUMN_ACTUAL_USES, game.getActualUses());
+        contentValues.put(GameEntry.COLUMN_PLANNED_USES, game.getPlannedUses());
 
         if (game.getOriginalReleaseDate() != null)
             contentValues.put(GameEntry.COLUMN_ORIGINAL_RELEASE_DATE, game.getOriginalReleaseDate().getTime());
@@ -77,9 +78,32 @@ public class Repository {
         game.setOriginalReleaseDate(new Date(c.getLong(c.getColumnIndexOrThrow(GameEntry.COLUMN_ORIGINAL_RELEASE_DATE))));
         game.setDeck(c.getString(c.getColumnIndexOrThrow(GameEntry.COLUMN_DECK)));
         game.setApiDetailUrl(c.getString(c.getColumnIndexOrThrow(GameEntry.COLUMN_API_DETAIL_URL)));
-        game.setUses(c.getInt(c.getColumnIndexOrThrow(GameEntry.COLUMN_USES)));
+        game.setActualUses(c.getInt(c.getColumnIndexOrThrow(GameEntry.COLUMN_ACTUAL_USES)));
+        game.setPlannedUses(c.getInt(c.getColumnIndexOrThrow(GameEntry.COLUMN_PLANNED_USES)));
+        game.setPlatforms(findPlatformsForGameId(game.getId()));
         Timber.d("got game from database (%s)", game.getName());
         return game;
+    }
+
+    @DebugLog
+    private List<Platform> findPlatformsForGameId(long gameId) {
+        List<Platform> platforms = new ArrayList<>();
+        for (long platformId : findPlatformIdsForGameId(gameId)) {
+            Cursor c = contentResolver.query(
+                    PlatformEntry.CONTENT_URI,
+                    null,
+                    PlatformEntry.COLUMN_GIANT_BOMB_ID + " = ?",
+                    new String[]{String.valueOf(platformId)},
+                    null
+            );
+            if (c != null && c.moveToFirst()) {
+                do {
+                    platforms.add(getPlatformFromCursor(c));
+                } while (c.moveToNext());
+                c.close();
+            }
+        }
+        return platforms;
     }
 
     @NonNull
@@ -211,6 +235,9 @@ public class Repository {
             } while (c.moveToNext());
             c.close();
         }
+        if (platformIds.size() == 0) {
+            Timber.e("Found zero platforms for game %s", gameId);
+        }
         return platformIds;
     }
 
@@ -284,25 +311,25 @@ public class Repository {
         return game;
     }
 
-    public int findGameUsesByGameId(long id) {
-        int gameUses = -1;
+    public int findGamePendingUsesByGameId(long id) {
+        int gamePendingUses = -1;
         Cursor c = contentResolver.query(
                 GameEntry.CONTENT_URI,
-                new String[]{GameEntry.COLUMN_USES},
+                new String[]{GameEntry.COLUMN_PLANNED_USES},
                 GameEntry.COLUMN_GIANT_BOMB_ID + " = ?",
                 new String[]{String.valueOf(id)},
                 null
         );
         if (c != null && c.moveToFirst()) {
-            gameUses = c.getInt(c.getColumnIndex(GameEntry.COLUMN_USES));
+            gamePendingUses = c.getInt(c.getColumnIndex(GameEntry.COLUMN_PLANNED_USES));
             c.close();
         }
-        return gameUses;
+        return gamePendingUses;
     }
 
     public int updateGameUsesById(long id, int uses) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(GameEntry.COLUMN_USES, uses);
+        contentValues.put(GameEntry.COLUMN_ACTUAL_USES, uses);
         return contentResolver.update(GameEntry.CONTENT_URI,
                 contentValues,
                 GameEntry.COLUMN_GIANT_BOMB_ID + " = ?",
@@ -311,7 +338,12 @@ public class Repository {
     }
 
     public int getGamesCount() {
-        Cursor c = contentResolver.query(GameEntry.CONTENT_URI, new String[]{"count(*)"}, null, null, null);
+        Cursor c = contentResolver.query(
+                GameEntry.CONTENT_URI,
+                new String[]{"count(*)"},
+                null,
+                null,
+                null);
         if (c == null) {
             return 0;
         }
@@ -333,6 +365,13 @@ public class Repository {
                 new String[]{String.valueOf(game.getId())}
         ) != 1) {
             Timber.w("Trying to delete nonexistant game (%s)", game.getName());
+        } else {
+            int rows = contentResolver.delete(
+                    GamePlatformEntry.CONTENT_URI,
+                    GamePlatformEntry.COLUMN_GAME + " = ?",
+                    new String[]{String.valueOf(game.getId())}
+            );
+            Timber.v("deleted %s rows out of %s", rows, game.getPlatforms().size());
         }
     }
 

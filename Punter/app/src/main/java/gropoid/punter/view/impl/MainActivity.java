@@ -40,6 +40,7 @@ import gropoid.punter.presenter.loader.PresenterFactory;
 import gropoid.punter.view.GoogleApiStateListener;
 import gropoid.punter.view.MainView;
 import gropoid.punter.view.PlayGamesHelper;
+import timber.log.Timber;
 
 
 public final class MainActivity extends BaseActivity<MainPresenter, MainView>
@@ -210,7 +211,7 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         }
         navigationView.setNavigationItemSelectedListener(mPresenter);
         toggleSignInNavigation(mPresenter.isGooglePlayClientConnected());
-        toggleDebugNavigation();
+        toggleDebugNavigation(BuildConfig.DEBUG);
     }
 
     @Override
@@ -288,8 +289,9 @@ public final class MainActivity extends BaseActivity<MainPresenter, MainView>
         }
     }
 
-    private void toggleDebugNavigation() {
-        navigationView.getMenu().findItem(R.id.nav_debug).setVisible(BuildConfig.DEBUG);
+    private void toggleDebugNavigation(boolean visible) {
+        Timber.v("toggleDebugNavigation(%s)", visible);
+        navigationView.getMenu().findItem(R.id.nav_debug).setVisible(visible);
     }
 
     @Override

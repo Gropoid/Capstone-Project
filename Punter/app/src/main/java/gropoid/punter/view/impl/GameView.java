@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import gropoid.punter.R;
 import gropoid.punter.domain.Game;
+import timber.log.Timber;
 
 
 public class GameView extends CardView {
@@ -50,9 +51,13 @@ public class GameView extends CardView {
     }
 
     public void bind(Game game) {
-        gameTitle.setText(game.getName());
-        Glide.with(getContext()).load(game.getImageFile())
-                .placeholder(R.drawable.static_tv)
-                .into(background);
+        if (game == null) {
+            Timber.e("Trying to bind a null game ???");
+        } else {
+            gameTitle.setText(game.getName());
+            Glide.with(getContext()).load(game.getImageFile())
+                    .placeholder(R.drawable.static_tv)
+                    .into(background);
+        }
     }
 }
